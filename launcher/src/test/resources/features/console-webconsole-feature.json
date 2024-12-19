@@ -1,0 +1,64 @@
+{
+	"id": "com.kentyou.featurelauncher:console-webconsole-feature:1.0",
+	"name": "Gogo console and Felix webconsole feature",
+	"description": "Gogo console and Felix webconsole feature",
+	"complete": true,
+	"bundles": [
+		{
+			"id": "org.apache.felix:org.apache.felix.configadmin:1.9.26"
+		},
+		{
+			"id": "org.apache.felix:org.apache.felix.gogo.command:1.1.2"
+		},
+		{
+			"id": "org.apache.felix:org.apache.felix.gogo.shell:1.1.4"
+		},
+		{
+			"id": "org.apache.felix:org.apache.felix.gogo.runtime:1.1.6"
+		},
+		{
+			"id": "biz.aQute:biz.aQute.gogo.commands.provider:1.9.0"
+		},
+		{
+			"id": "biz.aQute.bnd:biz.aQute.bnd.util:7.0.0"
+		},
+		{
+			"id": "org.apache.aries.spifly:org.apache.aries.spifly.dynamic.framework.extension:1.3.7"
+		},
+		{
+			"id": "org.slf4j:slf4j-api:2.0.9"
+		},
+		{
+			"id": "org.slf4j:slf4j-simple:2.0.9"
+		},
+		{
+			"id": "org.apache.felix:org.apache.felix.http.servlet-api:2.1.0"
+		},
+		{
+			"id": "org.apache.felix:org.apache.felix.http.jetty:5.0.4"
+		},
+		{
+			"id": "commons-io:commons-io:2.6"
+		},
+		{
+			"id": "commons-fileupload:commons-fileupload:1.5"
+		},
+		{
+			"id": "org.apache.felix:org.apache.felix.webconsole:4.8.8"
+		}
+	],
+	"configurations": {
+		"org.apache.felix.http~httpFeatureLauncherTest": {
+			"org.osgi.service.http.port": "8088",
+			"org.osgi.service.http.host": "localhost",
+			"org.apache.felix.http.context_path": "/feature-launcher-test",
+			"org.apache.felix.http.name": "FeatureLauncherTestHTTP",
+			"org.apache.felix.http.runtime.init.id": "httpFeatureLauncherTest"
+		},
+		"org.apache.felix.webconsole.internal.servlet.OsgiManager": {
+			"username": "fcAdmin",
+			"password": "fcAdmin",
+			"http.service.filter": "id=httpFeatureLauncherTest"
+		}
+	}
+}

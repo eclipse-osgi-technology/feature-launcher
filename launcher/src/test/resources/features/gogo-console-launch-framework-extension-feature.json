@@ -1,0 +1,28 @@
+{
+	"id": "com.kentyou.featurelauncher:gogo-console-launch-framework-extension-feature:1.0",
+	"name": "Gogo console feature with extension",
+	"description": "Gogo console feature with launch framework extension",
+	"complete": true,
+	"bundles": [
+		{
+			"id": "org.apache.felix:org.apache.felix.gogo.command:1.1.2"
+		},
+		{
+			"id": "org.apache.felix:org.apache.felix.gogo.shell:1.1.4"
+		},
+		{
+			"id": "org.apache.felix:org.apache.felix.gogo.runtime:1.1.6"
+		}
+	],
+	"extensions": {
+		"launch-framework": {
+			"kind": "mandatory",
+			"type": "artifacts",
+			"artifacts": [
+				{
+					"id": "org.eclipse.platform:org.eclipse.osgi:3.21.0"
+				}
+			]
+		}
+	}
+}

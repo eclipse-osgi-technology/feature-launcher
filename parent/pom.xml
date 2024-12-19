@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.kentyou.prototype.featurelauncher</groupId>
+	<artifactId>parent</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>Implementation of OSGi "160. Feature Launcher Service Specification"</name>
+	<url>https://github.com/kentyou/feature-launcher-prototype</url>
+
+	<developers>
+		<developer>
+			<id>ideas-into-software</id>
+			<name>Michael H. Siemaszko</name>
+			<email>mhs@into.software</email>
+		</developer>
+		<developer>
+			<id>timothyjward</id>
+			<name>Tim Ward</name>
+			<email>timothyjward@apache.org</email>
+		</developer>
+	</developers>
+
+	<repositories>
+		<repository>
+			<!-- Maven's public open source snapshot repo for unreleased OSGi
+			API -->
+			<id>OSSRH</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.release>17</maven.compiler.release>
+
+		<!-- dependency versions -->
+		<osgi.core.version>8.0.0</osgi.core.version>
+		<osgi.cm.version>1.6.1</osgi.cm.version>
+		<osgi.ds.version>1.5.1</osgi.ds.version>
+		<osgi.framework.version>1.10.0</osgi.framework.version>
+		<osgi.resource.version>1.0.1</osgi.resource.version>
+		<osgi.feature.version>1.0.0</osgi.feature.version>
+		<osgi.featurelauncher.version>1.0.0-SNAPSHOT</osgi.featurelauncher.version>
+		<osgi.util.converter.version>1.0.9</osgi.util.converter.version>
+		<jakarta.json.version>2.0.2</jakarta.json.version>
+		<felix.cm.json.version>2.0.6</felix.cm.json.version>
+		<felix.feature.version>1.0.2</felix.feature.version>
+		<maven.version>4.0.0-beta-4</maven.version>
+		<maven.resolver.version>2.0.1</maven.resolver.version>
+		<slf4j.version>2.0.11</slf4j.version>
+		<picocli.version>4.7.6</picocli.version>
+
+		<!-- default OSGi implementations' versions' -->
+		<felix.framework.version>7.0.5</felix.framework.version>
+		<felix.configadmin.version>1.9.26</felix.configadmin.version>
+		<felix.scr.version>2.2.2</felix.scr.version>
+
+		<!-- test dependencies' versions' -->
+		<osgi.test.version>1.3.0</osgi.test.version>
+		<junit-jupiter.version>5.11.1</junit-jupiter.version>
+		<junit-platform.version>1.11.1</junit-platform.version>
+		<mockito.version>5.14.1</mockito.version>
+		<aries.spifly.dynamic.framework.extension.version>1.3.7</aries.spifly.dynamic.framework.extension.version>
+		<glassfish.jakarta.json.version>2.0.1</glassfish.jakarta.json.version>
+		<commons.logging.version>1.2</commons.logging.version>
+
+		<!-- plugin dependencies' versions -->
+		<bnd.version>7.0.0</bnd.version>
+		<maven.dependency.plugin.version>3.8.0</maven.dependency.plugin.version>
+		<maven.properties.plugin.version>1.2.1</maven.properties.plugin.version>
+		<maven.clean.plugin.version>3.4.0</maven.clean.plugin.version>
+		<maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
+		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
+		<maven.surefire.plugin.version>3.3.0</maven.surefire.plugin.version>
+		<maven.jar.plugin.version>3.4.2</maven.jar.plugin.version>
+		<maven.install.plugin.version>3.1.2</maven.install.plugin.version>
+		<maven.deploy.plugin.version>3.1.2</maven.deploy.plugin.version>
+		<maven.site.plugin.version>3.12.1</maven.site.plugin.version>
+		<maven.project.info.reports.plugin.version>3.6.1</maven.project.info.reports.plugin.version>
+		<maven.shade.plugin.version>3.6.0</maven.shade.plugin.version>
+
+		<!-- Default properties for resolver setup in development -->
+		<save.test.bndrun.changes>true</save.test.bndrun.changes>
+		<verify.test.bndruns>false</verify.test.bndruns>
+
+		<!-- path to local M2 repository, also passed to integration tests via
+		System properties -->
+		<localRepositoryPath>${project.build.directory}/m2Repo</localRepositoryPath>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>osgi.core</artifactId>
+				<version>${osgi.core.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>osgi.annotation</artifactId>
+				<version>${osgi.core.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.framework</artifactId>
+				<version>${osgi.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.resource</artifactId>
+				<version>${osgi.resource.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.service.cm</artifactId>
+				<version>${osgi.cm.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.service.component</artifactId>
+				<version>${osgi.ds.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.service.component.annotations</artifactId>
+				<version>${osgi.ds.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.service.feature</artifactId>
+				<version>${osgi.feature.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.service.featurelauncher</artifactId>
+				<version>${osgi.featurelauncher.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.util.converter</artifactId>
+				<version>${osgi.util.converter.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>jakarta.json</groupId>
+				<artifactId>jakarta.json-api</artifactId>
+				<version>${jakarta.json.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.feature</artifactId>
+				<version>${felix.feature.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.cm.json</artifactId>
+				<version>${felix.cm.json.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.maven</groupId>
+				<artifactId>maven-resolver-provider</artifactId>
+				<version>${maven.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.assertj</groupId>
+						<artifactId>assertj-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.apache.maven.resolver</groupId>
+						<artifactId>maven-resolver-transport-apache</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.maven.resolver</groupId>
+				<artifactId>maven-resolver-supplier-mvn4</artifactId>
+				<version>${maven.resolver.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.maven.resolver</groupId>
+						<artifactId>maven-resolver-transport-apache</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.maven.resolver</groupId>
+				<artifactId>maven-resolver-transport-jdk-11</artifactId>
+				<version>${maven.resolver.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.maven.resolver</groupId>
+				<artifactId>maven-resolver-spi</artifactId>
+				<version>${maven.resolver.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish</groupId>
+				<artifactId>jakarta.json</artifactId>
+				<version>${glassfish.jakarta.json.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>info.picocli</groupId>
+				<artifactId>picocli</artifactId>
+				<version>${picocli.version}</version>
+			</dependency>
+	
+			<!-- default OSGi framework -->
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.framework</artifactId>
+				<version>${felix.framework.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+	
+			<!-- Testing -->
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-api</artifactId>
+				<version>${junit-jupiter.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.platform</groupId>
+				<artifactId>junit-platform-commons</artifactId>
+				<version>${junit-platform.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-params</artifactId>
+				<version>${junit-jupiter.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.test.junit5</artifactId>
+				<version>${osgi.test.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.test.junit5.cm</artifactId>
+				<version>${osgi.test.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.test.common</artifactId>
+				<version>${osgi.test.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.test.assertj.framework</artifactId>
+				<version>${osgi.test.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-engine</artifactId>
+				<version>${junit-jupiter.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.platform</groupId>
+				<artifactId>junit-platform-launcher</artifactId>
+				<version>${junit-platform.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-junit-jupiter</artifactId>
+				<version>${mockito.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.aries.spifly</groupId>
+				<artifactId>org.apache.aries.spifly.dynamic.framework.extension</artifactId>
+				<version>${aries.spifly.dynamic.framework.extension.version}</version>
+				<scope>test</scope>
+			</dependency>
+	
+			<!-- default OSGi implementation of 'ConfigurationAdmin' service -->
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.configadmin</artifactId>
+				<version>${felix.configadmin.version}</version>
+				<scope>test</scope>
+			</dependency>
+	
+			<!-- default OSGi implementation of 'Service Component Runtime' -->
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.scr</artifactId>
+				<version>${felix.scr.version}</version>
+				<scope>test</scope>
+			</dependency>
+	
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>${commons.logging.version}</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
+	<dependencies>
+		<!-- Testing -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-commons</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.test.junit5</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.test.junit5.cm</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.test.common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.test.assertj.framework</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-launcher</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement><!-- lock down plugins versions to avoid using Maven
+			defaults (may be moved to parent pom) -->
+			<plugins>
+				<!-- clean lifecycle, see
+				https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
+				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>${maven.clean.plugin.version}</version>
+				</plugin>
+				<!-- default lifecycle, jar packaging: see
+				https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${maven.resources.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven.compiler.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${maven.surefire.plugin.version}</version>
+					<configuration>
+						<excludes>
+							<exclude>**/integration/**</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>${maven.jar.plugin.version}</version>
+					<configuration>
+						<archive>
+							<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+						</archive>
+						<skipIfEmpty>true</skipIfEmpty>
+					</configuration>
+					<executions>
+						<execution>
+							<id>test-jar</id>
+							<phase>package</phase>
+							<goals>
+								<goal>test-jar</goal>
+							</goals>
+							<configuration>
+								<archive>
+									<manifestFile>${project.build.testOutputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+								</archive>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>${maven.install.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>${maven.deploy.plugin.version}</version>
+				</plugin>
+				<!-- site lifecycle, see
+				https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
+				<plugin>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>${maven.site.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-project-info-reports-plugin</artifactId>
+					<version>${maven.project.info.reports.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>biz.aQute.bnd</groupId>
+					<artifactId>bnd-maven-plugin</artifactId>
+					<version>${bnd.version}</version>
+					<executions>
+ 						<execution>
+							<goals>
+								<goal>bnd-process</goal>
+							</goals>
+							<configuration>
+								<bnd>
+									<![CDATA[
+										Bundle-Copyright: Copyright (c) (${now;YYYY}) Contributors to the Eclipse Foundation.
+										Bundle-Description: ${project.description}
+										Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
+										Git-Descriptor: ${system-allow-fail;git describe --dirty --always --abbrev=9}
+										Git-SHA: ${system-allow-fail;git rev-list -1 --no-abbrev-commit HEAD}
+										-noextraheaders: true
+										-reproducible: true
+									]]>
+								</bnd>
+								<bndfile>bnd.bnd</bndfile>
+							</configuration>
+						</execution>
+						<execution>
+							<id>bnd-process-tests</id>
+							<phase>process-test-classes</phase>
+							<goals>
+								<goal>bnd-process-tests</goal>
+							</goals>
+							<configuration>
+								<bnd>
+									<![CDATA[
+										Bundle-SymbolicName: ${project.groupId}.${project.artifactId}-tests
+										Fragment-Host: ${project.groupId}.${project.artifactId}
+										Git-Descriptor: ${system-allow-fail;git describe --dirty --always --abbrev=9}
+										Git-SHA: ${system-allow-fail;git rev-list -1 --no-abbrev-commit HEAD}
+										Test-Cases: ${classes;HIERARCHY_INDIRECTLY_ANNOTATED;org.junit.platform.commons.annotation.Testable;CONCRETE;NAMED;*.integration.*}
+									]]>
+								</bnd>
+								<bndfile>tests.bnd</bndfile>
+				 				<testCases>useTestCasesHeader</testCases>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>biz.aQute.bnd</groupId>
+					<artifactId>bnd-resolver-maven-plugin</artifactId>
+					<version>${bnd.version}</version>
+					<executions>
+						<execution>
+							<id>resolve-test</id>
+							<phase>pre-integration-test</phase>
+							<goals>
+								<goal>resolve</goal>
+							</goals>
+							<configuration>
+								<writeOnChanges>true</writeOnChanges>
+								<failOnChanges>false</failOnChanges>
+								<includeDependencyManagement>true</includeDependencyManagement>
+								<scopes>
+									<scope>compile</scope>
+									<scope>runtime</scope>
+									<scope>test</scope>
+								</scopes>
+								<bundles>
+									<bundle>
+										${project.build.directory}/${project.build.finalName}-tests.jar</bundle>
+								</bundles>
+								<bndruns>
+									<include>*-test.bndrun</include>
+								</bndruns>
+							</configuration>
+						</execution>
+						<execution>
+							<id>resolve</id>
+							<goals>
+								<goal>resolve</goal>
+							</goals>
+							<configuration>
+								<writeOnChanges>true</writeOnChanges>
+								<failOnChanges>false</failOnChanges>
+								<includeDependencyManagement>true</includeDependencyManagement>
+								<scopes>
+									<scope>compile</scope>
+									<scope>runtime</scope>
+								</scopes>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>biz.aQute.bnd</groupId>
+					<artifactId>bnd-testing-maven-plugin</artifactId>
+					<version>${bnd.version}</version>
+					<configuration>
+						<resolve>false</resolve>
+						<failOnChanges>false</failOnChanges>
+						<includeDependencyManagement>true</includeDependencyManagement>
+						<scopes>
+							<scope>compile</scope>
+							<scope>runtime</scope>
+							<scope>test</scope>
+						</scopes>
+						<bundles>
+							<bundle>${project.build.directory}/${project.build.finalName}-tests.jar</bundle>
+						</bundles>
+						<bndruns>
+							<include>*-test.bndrun</include>
+						</bndruns>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>testing</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>${maven.dependency.plugin.version}</version>
+					<executions>
+						<execution>
+							<id>copy-dependencies</id>
+							<phase>generate-test-resources</phase>
+							<goals>
+								<goal>copy-dependencies</goal>
+							</goals>
+							<configuration>
+								<includeArtifactIds>org.osgi.service.feature,org.apache.felix.webconsole</includeArtifactIds>
+								<outputDirectory>${localRepositoryPath}</outputDirectory>
+								<useRepositoryLayout>true</useRepositoryLayout>
+								<copyPom>true</copyPom>
+								<includeScope>test</includeScope>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>properties-maven-plugin</artifactId>
+					<version>${maven.properties.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>${maven.shade.plugin.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

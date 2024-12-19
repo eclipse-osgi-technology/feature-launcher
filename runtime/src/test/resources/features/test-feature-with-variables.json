@@ -1,0 +1,20 @@
+{
+	"feature-resource-version": "1.0",
+	"id": "com.kentyou.featurelauncher:test-feature-with-variables:1.0",
+	"description": "Feature with variables",
+	"variables": {
+		"http.port": 8080,
+		"db.username": "scott",
+		"db.password": null
+	},
+	"configurations": {
+		"org.acme.server.http": {
+			// FIXME: "Apache Felix Configuration Json" issue must be addressed before this can be used
+			"org.osgi.service.http.port:Integer": "${http.port}"
+		},
+		"org.acme.db": {
+			"username": "${db.username}-user",
+			"password": "${db.password}"
+		}
+	}
+}

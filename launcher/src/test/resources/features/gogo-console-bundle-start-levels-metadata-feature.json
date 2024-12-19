@@ -1,0 +1,19 @@
+{
+	"feature-resource-version": "1.0",
+	"id": "com.kentyou.featurelauncher:gogo-console-bundle-start-levels-metadata-feature:1.0",
+	"description": "Feature with bundle start levels metadata",
+	"bundles": [
+		{
+			"id": "org.apache.felix:org.apache.felix.gogo.command:1.1.2",
+			"bundleStartLevel": 2
+		},
+		{
+			"id": "org.apache.felix:org.apache.felix.gogo.shell:1.1.4",
+			"bundleStartLevel": 2
+		},
+		{
+			"id": "org.apache.felix:org.apache.felix.gogo.runtime:1.1.6",
+			"bundleStartLevel": 2
+		}
+	]
+}

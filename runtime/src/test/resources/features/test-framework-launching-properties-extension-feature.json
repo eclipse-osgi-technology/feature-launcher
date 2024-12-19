@@ -1,0 +1,28 @@
+{
+	"feature-resource-version": "1.0",
+	"id": "com.kentyou.featurelauncher:gogo-console-framework-launching-properties-extension-feature:1.0",
+	"description": "Feature with framework launching properties extension",
+	"variables": {
+		"fw.bsnversion": "multiple"		// Can be overridden through the launcher
+
+	},
+	"extensions": {
+		"framework-launching-properties": {
+			"kind": "mandatory",
+			"type": "json",
+			"json": {
+				"_osgi_featurelauncher_launchprops_version": "1.0.0",
+				// org.osgi.service.featurelauncher.FeatureLauncherConstants.FRAMEWORK_LAUNCHING_PROPERTIES_VERSION
+				"org.osgi.framework.bootdelegation": "sun.*,com.sun.*",
+				// org.osgi.framework.Constants.FRAMEWORK_BOOTDELEGATION
+				"org.osgi.framework.storage.clean": "never-seen",
+				// org.osgi.framework.Constants.FRAMEWORK_STORAGE_CLEAN, org.osgi.framework.Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT
+				"org.osgi.framework.bsnversion": "${fw.bsnversion}",
+				// org.osgi.framework.Constants.FRAMEWORK_BSNVERSION, org.osgi.framework.Constants.FRAMEWORK_BSNVERSION_MULTIPLE
+				"felix.log.level": 4,
+				// org.apache.felix.framework.util.FelixConstants.LOG_LEVEL_PROP
+				"__custom_featurelauncher_launchprop": "test"
+			}
+		}
+	}
+}

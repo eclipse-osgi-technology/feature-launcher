@@ -1,0 +1,7 @@
+-includeresource: @artifact.maven.shaded-${project.version}.jar!/!com/kentyou/featurelauncher/repository/spi/*
+
+Import-Package: \
+ !com.kentyou.shaded.*,\
+ !javax.inject,\
+ !org.eclipse.sisu,\
+ *
