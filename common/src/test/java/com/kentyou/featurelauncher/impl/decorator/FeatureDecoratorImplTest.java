@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,9 +39,9 @@ import org.osgi.service.feature.ID;
 import org.osgi.service.featurelauncher.decorator.AbandonOperationException;
 import org.osgi.service.featurelauncher.decorator.DecoratorBuilderFactory;
 import org.osgi.service.featurelauncher.decorator.FeatureDecorator;
+import org.osgi.service.featurelauncher.decorator.FeatureExtensionHandler;
 
-import com.kentyou.featurelauncher.common.decorator.impl.DecorationContext;
-import com.kentyou.featurelauncher.common.util.impl.ServiceLoaderUtil;
+import com.kentyou.prototype.featurelauncher.common.decorator.impl.DecorationContext;
 
 /**
  * Tests
@@ -53,15 +54,14 @@ import com.kentyou.featurelauncher.common.util.impl.ServiceLoaderUtil;
 public class FeatureDecoratorImplTest {
 	FeatureService featureService;
 	Feature feature;
-	DecorationContext util;
+	DecorationContext<FeatureExtensionHandler> util;
 
 	@BeforeEach
 	public void setUp() throws URISyntaxException, IOException {
 		// Load the Feature Service
-		featureService = ServiceLoaderUtil.loadFeatureService();
-		assertNotNull(featureService);
+		featureService = ServiceLoader.load(FeatureService.class).findFirst().get();
 
-		util = new DecorationContext(List.of());
+		util = new DecorationContext<>((f,e,b,d) -> f, List.of());
 
 		// Read feature
 		Path featureJSONPath = Paths.get(getClass().getResource("/features/gogo-console-feature.json").toURI());

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+    <parent>
+		<groupId>com.kentyou.prototype.featurelauncher.repository</groupId>
+		<artifactId>repositories</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+	<artifactId>maven</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Feature Launcher &quot;Maven&quot; Repository - no OSGi dependencies</name>
+	<url>https://github.com/kentyou/feature-launcher-prototype</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>spi</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-resolver-provider</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.resolver</groupId>
+			<artifactId>maven-resolver-supplier-mvn4</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.resolver</groupId>
+			<artifactId>maven-resolver-spi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.resolver</groupId>
+			<artifactId>maven-resolver-transport-jdk-11</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		
+		<!-- Used in tests -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>tests</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive combine.self="override"/>
+				</configuration>
+				<executions>
+					<execution>
+						<id>test-jar</id>
+						<configuration>
+							<archive combine.self="override"/>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>${project.groupId}</groupId>
+						<artifactId>maven.shading</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<minimizeJar>true</minimizeJar>
+							<artifactSet>
+								<excludes>
+									<exclude>org.osgi:*</exclude>
+									<exclude>org.slf4j:*</exclude>
+								</excludes>
+							</artifactSet>
+							<relocations>
+								<relocation>
+									<pattern>com.ctc.wstx</pattern>
+									<shadedPattern>com.kentyou.shaded.wstx</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.apache.commons.codec</pattern>
+									<shadedPattern>com.kentyou.shaded.codec</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.apache.maven</pattern>
+									<shadedPattern>com.kentyou.shaded.maven</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.apache.http</pattern>
+									<shadedPattern>com.kentyou.shaded.http</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.codehaus.plexus</pattern>
+									<shadedPattern>com.kentyou.shaded.plexus</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.codehaus.stax2</pattern>
+									<shadedPattern>com.kentyou.shaded.stax2</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.eclipse.aether</pattern>
+									<shadedPattern>com.kentyou.shaded.aether</shadedPattern>
+								</relocation>
+							</relocations>
+							<transformers>
+								<transformer implementation="com.kentyou.featurelauncher.shading.RelocatingAppendingTransformer">
+									<resource>META-INF/sisu/javax.inject.Named</resource>
+								</transformer>
+				                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -14,17 +14,27 @@
 	<artifactId>common</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Common Implementation objects for OSGi "160. Feature Launcher Service Specification"</name>
+	<name>Common Implementation objects Feature Launcher - no OSGi framework dependency</name>
 	<url>https://github.com/kentyou/feature-launcher-prototype</url>
+
+	<properties>
+		<featurelauncher.dependency.allowed>true</featurelauncher.dependency.allowed>
+	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.service.featurelauncher</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.osgi</groupId>
+					<artifactId>org.osgi.framework</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>artifact.spi</artifactId>
+			<groupId>${project.groupId}.repository</groupId>
+			<artifactId>spi</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

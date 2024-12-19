@@ -13,11 +13,11 @@
  */
 package com.kentyou.featurelauncher.impl.runtime.integration;
 
+import static com.kentyou.featurelauncher.repository.spi.RepositoryConstants.DEFAULT_LOCAL_ARTIFACT_REPOSITORY_NAME;
+import static com.kentyou.featurelauncher.repository.spi.RepositoryConstants.DEFAULT_REMOTE_ARTIFACT_REPOSITORY_NAME;
+import static com.kentyou.featurelauncher.repository.spi.RepositoryConstants.LOCAL_ARTIFACT_REPOSITORY_PATH;
 import static com.kentyou.featurelauncher.common.util.impl.ConfigurationUtil.CONFIGURATIONS_FILTER;
 import static com.kentyou.featurelauncher.common.util.impl.ConfigurationUtil.constructConfigurationsFilter;
-import static com.kentyou.featurelauncher.repository.spi.ArtifactRepositoryConstants.DEFAULT_LOCAL_ARTIFACT_REPOSITORY_NAME;
-import static com.kentyou.featurelauncher.repository.spi.ArtifactRepositoryConstants.DEFAULT_REMOTE_ARTIFACT_REPOSITORY_NAME;
-import static com.kentyou.featurelauncher.repository.spi.ArtifactRepositoryConstants.LOCAL_ARTIFACT_REPOSITORY_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

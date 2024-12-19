@@ -43,14 +43,19 @@
 		<maven.compiler.target>17</maven.compiler.target>
 		<maven.compiler.release>17</maven.compiler.release>
 
+		<!-- Forbid the OSGi framework API - required for most projects -->
+		<osgi.dependency.allowed>false</osgi.dependency.allowed>
+		<featurelauncher.dependency.allowed>${osgi.dependency.allowed}</featurelauncher.dependency.allowed>
+
 		<!-- dependency versions -->
-		<osgi.core.version>8.0.0</osgi.core.version>
+		<osgi.annotation.version>8.0.0</osgi.annotation.version>
 		<osgi.cm.version>1.6.1</osgi.cm.version>
 		<osgi.ds.version>1.5.1</osgi.ds.version>
-		<osgi.framework.version>1.10.0</osgi.framework.version>
+		<osgi.framework.version>1.8.0</osgi.framework.version>
 		<osgi.resource.version>1.0.1</osgi.resource.version>
 		<osgi.feature.version>1.0.0</osgi.feature.version>
 		<osgi.featurelauncher.version>1.0.0-SNAPSHOT</osgi.featurelauncher.version>
+		<osgi.util.tracker.version>1.5.4</osgi.util.tracker.version>
 		<osgi.util.converter.version>1.0.9</osgi.util.converter.version>
 		<jakarta.json.version>2.0.2</jakarta.json.version>
 		<felix.cm.json.version>2.0.6</felix.cm.json.version>
@@ -102,25 +107,27 @@
 		<dependencies>
 			<dependency>
 				<groupId>org.osgi</groupId>
-				<artifactId>osgi.core</artifactId>
-				<version>${osgi.core.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.osgi</groupId>
 				<artifactId>osgi.annotation</artifactId>
-				<version>${osgi.core.version}</version>
+				<version>${osgi.annotation.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.osgi</groupId>
 				<artifactId>org.osgi.framework</artifactId>
 				<version>${osgi.framework.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.util.tracker</artifactId>
+				<version>${osgi.util.tracker.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.osgi</groupId>
 				<artifactId>org.osgi.resource</artifactId>
 				<version>${osgi.resource.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.osgi</groupId>
@@ -592,7 +599,69 @@
 					<artifactId>maven-shade-plugin</artifactId>
 					<version>${maven.shade.plugin.version}</version>
 				</plugin>
+				<!-- The enforcer plugin is used to prevent dependencies on the OSGi API -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>3.5.0</version>
+					<executions>
+						<execution>
+							<id>ban-osgi-dependencies</id>
+							<goals>
+								<goal>enforce</goal>
+							</goals>
+							<configuration>
+								<rules>
+									<bannedDependencies>
+										<excludes>
+											<exclude>org.osgi:*:*:*:provided</exclude>
+											<exclude>org.osgi:*:*:*:compile</exclude>
+											<exclude>org.osgi:*:*:*:runtime</exclude>
+										</excludes>
+										<includes>
+											<include>org.osgi:org.osgi.service.feature</include>
+											<include>org.osgi:osgi.annotation</include>
+											<include>org.osgi:org.osgi.namespace.*</include>
+										</includes>
+									</bannedDependencies>
+								</rules>
+								<skip>${featurelauncher.dependency.allowed}</skip>
+							</configuration>
+						</execution>
+						<execution>
+							<id>ban-osgi-dependencies-except-featurelauncher-and-component-annotations</id>
+							<goals>
+								<goal>enforce</goal>
+							</goals>
+							<configuration>
+								<rules>
+									<bannedDependencies>
+										<excludes>
+											<exclude>org.osgi:*:*:*:provided</exclude>
+											<exclude>org.osgi:*:*:*:compile</exclude>
+											<exclude>org.osgi:*:*:*:runtime</exclude>
+										</excludes>
+										<includes>
+											<include>org.osgi:org.osgi.service.feature</include>
+											<include>org.osgi:osgi.annotation</include>
+											<include>org.osgi:org.osgi.namespace.*</include>
+											<include>org.osgi:org.osgi.service.featurelauncher</include>
+											<include>org.osgi:org.osgi.service.component.annotations</include>
+										</includes>
+									</bannedDependencies>
+								</rules>
+								<skip>${osgi.dependency.allowed}</skip>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+			</plugin>
+		</plugins>
 	</build>
 </project>

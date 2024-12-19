@@ -21,6 +21,7 @@ import static com.kentyou.featurelauncher.common.util.impl.ConfigurationUtil.nor
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,7 +30,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.Configuration.ConfigurationAttribute;
@@ -40,7 +40,7 @@ import org.osgi.service.feature.FeatureConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.kentyou.featurelauncher.common.util.impl.VariablesUtil;
+import com.kentyou.prototype.featurelauncher.common.util.impl.VariablesUtil;
 
 
 /**
@@ -157,7 +157,7 @@ public class FeatureRuntimeConfigurationManager {
 		configurationProperties.put(CONFIGURATIONS_FILTER, Boolean.TRUE);
 
 		try {
-			configuration.updateIfDifferent(FrameworkUtil.asDictionary(configurationProperties));
+			configuration.updateIfDifferent(new Hashtable<>(configurationProperties));
 		} catch (IOException e) {
 			LOG.error(String.format("Error updating configuration properties %s!", featureConfiguration.getPid()), e);
 		}

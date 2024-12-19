@@ -75,10 +75,12 @@ import org.osgi.service.featurelauncher.runtime.RuntimeConfigurationMerge.Featur
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.kentyou.featurelauncher.common.decorator.impl.DecorationContext;
-import com.kentyou.featurelauncher.common.repository.impl.WrappingArtifactRepository;
-import com.kentyou.featurelauncher.repository.spi.FileSystemArtifactRepository;
-import com.kentyou.featurelauncher.repository.spi.NamedArtifactRepository;
+import com.kentyou.featurelauncher.repository.spi.FileSystemRepository;
+import com.kentyou.featurelauncher.repository.spi.Repository;
+import com.kentyou.prototype.featurelauncher.common.decorator.impl.DecorationContext;
+import com.kentyou.prototype.featurelauncher.common.repository.impl.WrappingRepository;
+import com.kentyou.prototype.featurelauncher.repository.common.osgi.ArtifactRepositoryAdapter;
+import com.kentyou.prototype.featurelauncher.repository.common.osgi.RepositoryAdapter;
 
 
 /**
@@ -145,7 +147,7 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 		this.featureRuntimeConfigurationManager = frcm;
 
 		try {
-			Map<String, NamedArtifactRepository> repos = new HashMap<String, NamedArtifactRepository>();
+			Map<String, ArtifactRepository> repos = new HashMap<>();
 			String userHome = System.getProperty("user.home");
 			if(config.local_repositories_enabled()) {
 				for(String localRepo : config.local_repositories()) {
@@ -153,11 +155,10 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 						localRepo = userHome + localRepo.substring(1);
 					}
 					ArtifactRepository ar = artifactRepositoryFactory.createRepository(Paths.get(localRepo));
-					if(ar instanceof NamedArtifactRepository nar) {
-						repos.put(nar.getName(), nar);
+					if(ar instanceof ArtifactRepositoryAdapter ara) {
+						repos.put(ara.unwrap().getName(), ara);
 					} else {
-						WrappingArtifactRepository war = new WrappingArtifactRepository(ar, userHome);
-						repos.put(userHome, war);
+						repos.put("Local " + localRepo, ar);
 					}
 				}
 			}
@@ -174,11 +175,10 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 					}
 					
 					ArtifactRepository ar = artifactRepositoryFactory.createRepository(uri, props);
-					if(ar instanceof NamedArtifactRepository nar) {
-						repos.put(nar.getName(), nar);
+					if(ar instanceof ArtifactRepositoryAdapter ara) {
+						repos.put(ara.unwrap().getName(), ara);
 					} else {
-						WrappingArtifactRepository war = new WrappingArtifactRepository(ar, userHome);
-						repos.put(userHome, war);
+						repos.put("Remote " + uri, ar);
 					}
 				}
 			}
@@ -311,7 +311,7 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 	}
 
 	abstract class AbstractOperationBuilderImpl<T extends OperationBuilder<T>> implements OperationBuilder<T> {
-		protected DecorationContext decorationUtil;
+		protected DecorationContext<?> decorationUtil;
 		protected Feature feature;
 		protected boolean isCompleted;
 		protected boolean useDefaultRepositories;
@@ -451,7 +451,15 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 				getDefaultRepositories().forEach((k, v) -> this.artifactRepositories.putIfAbsent(k, v));
 			}
 
-			decorationUtil = new DecorationContext(List.copyOf(this.artifactRepositories.values()));
+			FeatureExtensionHandler launchHandler = (f, fe, x, y) -> {
+				LOG.warn("The feature {} defines a launch extension, but is being installed into a running framework.", f.getID());
+				return f;
+			};
+			decorationUtil = new DecorationContext<>(launchHandler,
+					this.artifactRepositories.entrySet().stream()
+						.map(e -> e.getValue() instanceof ArtifactRepositoryAdapter ?
+								((ArtifactRepositoryAdapter)e.getValue()).unwrap() : new RepositoryAdapter(e.getValue(), e.getKey()))
+						.collect(Collectors.toList()));
 
 			return addOrUpdateFeature(feature);
 		}
@@ -1056,12 +1064,22 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 
 		protected Path getArtifactPath(ID featureBundleID) {
 			for (ArtifactRepository artifactRepository : artifactRepositories.values()) {
-				if (FileSystemArtifactRepository.class.isInstance(artifactRepository)) {
-					Path featureBundlePath = ((FileSystemArtifactRepository) artifactRepository)
-							.getArtifactPath(featureBundleID);
-					if (featureBundlePath != null) {
-						return featureBundlePath;
-					}
+				Repository r;
+				if(ArtifactRepositoryAdapter.class.isInstance(artifactRepository)) {
+					r = ((ArtifactRepositoryAdapter)artifactRepository).unwrap();
+				} else {
+					r = new RepositoryAdapter(artifactRepository);
+				}
+				FileSystemRepository fsr;
+				if(r instanceof FileSystemRepository) {
+					fsr = (FileSystemRepository) r;
+				} else {
+					fsr = new WrappingRepository(r, r.getName());
+				}
+				
+				Path featureBundlePath = fsr.getArtifactPath(featureBundleID);
+				if (featureBundlePath != null) {
+					return featureBundlePath;
 				}
 			}
 

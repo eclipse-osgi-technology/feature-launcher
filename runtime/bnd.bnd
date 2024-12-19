@@ -1,1 +1,4 @@
--conditionalpackage: com.kentyou.featurelauncher.common.*
+-conditionalpackage: \
+ com.kentyou.featurelauncher.common.*,\
+ com.kentyou.prototype.featurelauncher.common.*,\
+ 
