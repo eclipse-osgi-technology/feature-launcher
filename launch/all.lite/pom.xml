@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.kentyou.prototype.featurelauncher.launch</groupId>
+		<groupId>org.eclipse.osgi-technology.featurelauncher.launch</groupId>
 		<artifactId>launch</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
@@ -44,7 +44,7 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.kentyou.prototype.featurelauncher.repository</groupId>
+			<groupId>org.eclipse.osgi-technology.featurelauncher.repository</groupId>
 			<artifactId>lite</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -64,7 +64,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.kentyou.prototype.featurelauncher.repository</groupId>
+			<groupId>org.eclipse.osgi-technology.featurelauncher.repository</groupId>
 			<artifactId>common.osgi</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
@@ -117,11 +117,11 @@
 						
 							<artifactSet>
 								<includes>
-									<include>com.kentyou.prototype.featurelauncher.repository:lite</include>
-									<include>com.kentyou.prototype.featurelauncher.repository:spi</include>
-									<include>com.kentyou.prototype.featurelauncher:common</include>
-									<include>com.kentyou.prototype.featurelauncher.launch:cli.pico</include>
-									<include>com.kentyou.prototype.featurelauncher.launch:spi</include>
+									<include>org.eclipse.osgi-technology.featurelauncher.repository:lite</include>
+									<include>org.eclipse.osgi-technology.featurelauncher.repository:spi</include>
+									<include>org.eclipse.osgi-technology.featurelauncher:common</include>
+									<include>org.eclipse.osgi-technology.featurelauncher.launch:cli.pico</include>
+									<include>org.eclipse.osgi-technology.featurelauncher.launch:spi</include>
 									<include>info.picocli:picocli</include>
 									<include>org.apache.felix:org.apache.felix.cm.json</include>
 									<include>org.apache.felix:org.apache.felix.feature</include>
@@ -135,7 +135,7 @@
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<mainClass>
-										com.kentyou.prototype.featurelauncher.launch.cli.pico.FeatureLauncherCli</mainClass>
+										org.eclipse.osgi.technology.featurelauncher.launch.cli.pico.FeatureLauncherCli</mainClass>
 								</transformer>
 							</transformers>
 						</configuration>
@@ -166,7 +166,7 @@
 						 			<destFileName>secondstage.jar</destFileName>
 							 	</artifactItem>
 							 	<artifactItem>
-						 			<groupId>com.kentyou.prototype.featurelauncher.repository</groupId>
+						 			<groupId>org.eclipse.osgi-technology.featurelauncher.repository</groupId>
 						 			<artifactId>common.osgi</artifactId>
 						 			<destFileName>repo-common-osgi.jar</destFileName>
 							 	</artifactItem>

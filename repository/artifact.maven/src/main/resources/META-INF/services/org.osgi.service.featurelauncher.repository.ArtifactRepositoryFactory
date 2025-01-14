@@ -1,1 +1,1 @@
-com.kentyou.prototype.featurelauncher.repository.artifact.maven.MavenArtifactRepositoryFactory
+org.eclipse.osgi.technology.featurelauncher.repository.artifact.maven.MavenArtifactRepositoryFactory

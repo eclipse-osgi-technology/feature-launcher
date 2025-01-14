@@ -1,1 +1,1 @@
-com.kentyou.prototype.featurelauncher.launch.launcher.FeatureLauncherImpl
+org.eclipse.osgi.technology.featurelauncher.launch.launcher.FeatureLauncherImpl

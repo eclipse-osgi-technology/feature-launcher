@@ -23,8 +23,8 @@
 
 -runbundles: \
 	com.fasterxml.woodstox.woodstox-core;version='[7.0.0,7.0.1)',\
-	com.kentyou.featurelauncher;version='[1.0.0,1.0.1)',\
-	com.kentyou.featurelauncher-tests;version='[1.0.0,1.0.1)',\
+	org.eclipse.osgi-technology.featurelauncher;version='[1.0.0,1.0.1)',\
+	org.eclipse.osgi-technology.featurelauncher-tests;version='[1.0.0,1.0.1)',\
 	junit-jupiter-api;version='[5.11.1,5.11.2)',\
 	junit-jupiter-engine;version='[5.11.1,5.11.2)',\
 	junit-jupiter-params;version='[5.11.1,5.11.2)',\

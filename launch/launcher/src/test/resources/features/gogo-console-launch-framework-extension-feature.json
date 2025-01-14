@@ -1,5 +1,5 @@
 {
-	"id": "com.kentyou.featurelauncher:gogo-console-launch-framework-extension-feature:1.0",
+	"id": "org.eclipse.osgi.technology.featurelauncher:gogo-console-launch-framework-extension-feature:1.0",
 	"name": "Gogo console feature with extension",
 	"description": "Gogo console feature with launch framework extension",
 	"complete": true,

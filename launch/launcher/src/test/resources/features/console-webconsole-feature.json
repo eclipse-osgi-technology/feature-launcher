@@ -1,5 +1,5 @@
 {
-	"id": "com.kentyou.featurelauncher:console-webconsole-feature:1.0",
+	"id": "org.eclipse.osgi.technology.featurelauncher:console-webconsole-feature:1.0",
 	"name": "Gogo console and Felix webconsole feature",
 	"description": "Gogo console and Felix webconsole feature",
 	"complete": true,

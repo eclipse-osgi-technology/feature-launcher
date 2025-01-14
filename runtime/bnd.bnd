@@ -1,4 +1,3 @@
 -conditionalpackage: \
- com.kentyou.featurelauncher.common.*,\
- com.kentyou.prototype.featurelauncher.common.*,\
+ org.eclipse.osgi.technology.featurelauncher.common.*
  

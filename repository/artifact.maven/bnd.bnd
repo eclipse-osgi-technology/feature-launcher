@@ -1,7 +1,7 @@
--includeresource: @maven-${project.version}.jar!/!com/kentyou/featurelauncher/repository/spi/*
+-includeresource: @maven-${project.version}.jar!/!org/eclipse/osgi/technology/featurelauncher/repository/spi/*
 
 Import-Package: \
- !com.kentyou.shaded.*,\
+ !org.eclipse.osgi.technology.shaded.*,\
  !javax.inject,\
  !org.eclipse.sisu,\
  *

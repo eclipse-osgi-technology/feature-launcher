@@ -19,13 +19,14 @@
 	order=sortbynameversion,\
 	begin=-1
 -resolve: auto
+-runblacklist: bnd.identity;id='org.eclipse.osgi-technology.featurelauncher.artifact.lite'
 
 -runbundles: \
-	com.kentyou.prototype.featurelauncher.repository.artifact.maven;version='[1.0.0,1.0.1)',\
-	com.kentyou.prototype.featurelauncher.repository.common.osgi;version='[1.0.0,1.0.1)',\
-	com.kentyou.prototype.featurelauncher.repository.spi;version='[1.0.0,1.0.1)',\
-	com.kentyou.prototype.featurelauncher.runtime;version='[1.0.0,1.0.1)',\
-	com.kentyou.prototype.featurelauncher.runtime-tests;version='[1.0.0,1.0.1)',\
+	org.eclipse.osgi-technology.featurelauncher.repository.artifact.maven;version='[1.0.0,1.0.1)',\
+	org.eclipse.osgi-technology.featurelauncher.repository.common.osgi;version='[1.0.0,1.0.1)',\
+	org.eclipse.osgi-technology.featurelauncher.repository.spi;version='[1.0.0,1.0.1)',\
+	org.eclipse.osgi-technology.featurelauncher.runtime;version='[1.0.0,1.0.1)',\
+	org.eclipse.osgi-technology.featurelauncher.runtime-tests;version='[1.0.0,1.0.1)',\
 	junit-jupiter-api;version='[5.11.1,5.11.2)',\
 	junit-jupiter-engine;version='[5.11.1,5.11.2)',\
 	junit-jupiter-params;version='[5.11.1,5.11.2)',\
@@ -51,4 +52,3 @@
 	org.osgi.util.promise;version='[1.0.0,1.0.1)',\
 	slf4j.api;version='[2.0.11,2.0.12)',\
 	slf4j.simple;version='[2.0.11,2.0.12)'
--runblacklist: bnd.identity;id='com.kentyou.prototype.featurelauncher.artifact.lite'

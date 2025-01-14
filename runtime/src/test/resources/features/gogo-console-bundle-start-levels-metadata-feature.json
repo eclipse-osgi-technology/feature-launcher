@@ -1,6 +1,6 @@
 {
 	"feature-resource-version": "1.0",
-	"id": "com.kentyou.featurelauncher:gogo-console-bundle-start-levels-metadata-feature:1.0",
+	"id": "org.eclipse.osgi.technology.featurelauncher:gogo-console-bundle-start-levels-metadata-feature:1.0",
 	"description": "Feature with bundle start levels metadata",
 	"bundles": [
 		{

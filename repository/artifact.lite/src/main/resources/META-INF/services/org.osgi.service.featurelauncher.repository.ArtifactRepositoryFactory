@@ -1,1 +1,1 @@
-com.kentyou.prototype.featurelauncher.repository.artifact.lite.LiteArtifactRepositoryFactory
+org.eclipse.osgi.technology.featurelauncher.repository.artifact.lite.LiteArtifactRepositoryFactory

@@ -1,6 +1,6 @@
 {
 	"feature-resource-version": "1.0",
-	"id": "com.kentyou.featurelauncher:gogo-console-bundle-start-levels-extension-feature:1.0",
+	"id": "org.eclipse.osgi.technology.featurelauncher:gogo-console-bundle-start-levels-extension-feature:1.0",
 	"description": "Feature with bundle start levels extension",
 	"bundles": [
 		{
@@ -19,8 +19,8 @@
 			"type": "json",
 			"json": {
 				"defaultStartLevel": 4,
-				// The default start level to use for bundles in this feature; com.kentyou.featurelauncher.impl.decorator.FeatureDecorationConstants.BUNDLE_START_LEVELS_DEFAULT
-				"minimumStartLevel": 7				// The minimum required framework start level after installing this feature; com.kentyou.featurelauncher.impl.decorator.FeatureDecorationConstants.BUNDLE_START_LEVELS_MINIMUM
+				// The default start level to use for bundles in this feature; org.eclipse.osgi.technology.featurelauncher.impl.decorator.FeatureDecorationConstants.BUNDLE_START_LEVELS_DEFAULT
+				"minimumStartLevel": 7				// The minimum required framework start level after installing this feature; org.eclipse.osgi.technology.featurelauncher.impl.decorator.FeatureDecorationConstants.BUNDLE_START_LEVELS_MINIMUM
 
 			}
 		}
