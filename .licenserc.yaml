@@ -46,6 +46,10 @@ header:
     - 'license.templates'
     - '**/logback-test.xml'
     - '**/*.svg'
-    - 'api/**'
+    - '**/second-stage-classpath'
+    - '**/*.bndrun'
+    - '**/bin/pom.xml'
+    - '**/resources/META-INF/services/**'
+    - '**/bnd.bnd'
 
   comment: always
