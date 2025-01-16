@@ -1,0 +1,11 @@
+name: Deploy Maven
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  publish:
+    uses: eclipse-osgi-technology/.github/.github/workflows/reuse_java_deploy.yml@main
+    secrets: inherit
