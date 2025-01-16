@@ -85,8 +85,6 @@ import org.slf4j.LoggerFactory;
 /**
  * 160.5 The Feature Runtime Service
  * 
- * Some parts based on {@link org.eclipse.sensinact.gateway.launcher.FeatureLauncher}
- * 
  * @author Michael H. Siemaszko (mhs@into.software)
  * @since Sep 15, 2024
  */

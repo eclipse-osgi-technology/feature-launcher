@@ -24,7 +24,7 @@ import org.osgi.service.feature.ID;
 import org.osgi.service.featurelauncher.decorator.DecoratorBuilderFactory;
 
 /**
- * Implementation of {@link org.osgi.service.featurelauncher.decorator.DecoratorBuilderFactory}
+ * Implementation of {@link DecoratorBuilderFactory}
  * 
  * @author Michael H. Siemaszko (mhs@into.software)
  * @since Sep 15, 2024

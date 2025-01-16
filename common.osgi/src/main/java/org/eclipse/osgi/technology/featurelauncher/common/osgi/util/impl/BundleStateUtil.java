@@ -31,12 +31,12 @@ public class BundleStateUtil {
 	 * 
 	 * A bundle can be in one of six states:
 	 * <ul>
-	 * <li>{@link #UNINSTALLED}</li>
-	 * <li>{@link #INSTALLED}</li>
-	 * <li>{@link #RESOLVED}</li>
-	 * <li>{@link #STARTING}</li>
-	 * <li>{@link #STOPPING}</li>
-	 * <li>{@link #ACTIVE}</li>
+	 * <li>{@link Bundle#UNINSTALLED}</li>
+	 * <li>{@link Bundle#INSTALLED}</li>
+	 * <li>{@link Bundle#RESOLVED}</li>
+	 * <li>{@link Bundle#STARTING}</li>
+	 * <li>{@link Bundle#STOPPING}</li>
+	 * <li>{@link Bundle#ACTIVE}</li>
 	 * </ul>
 	 */
 	public static String getBundleStateString(int bundleState) {

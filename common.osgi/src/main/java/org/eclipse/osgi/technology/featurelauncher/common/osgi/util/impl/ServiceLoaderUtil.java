@@ -21,7 +21,7 @@ import org.osgi.service.featurelauncher.FeatureLauncher;
 import org.osgi.service.featurelauncher.repository.ArtifactRepositoryFactory;
 
 /**
- * Util for {@link java.util.ServiceLoader<T>} operations.
+ * Util for {@link java.util.ServiceLoader} operations.
  * 
  * @author Michael H. Siemaszko (mhs@into.software)
  * @since Oct 11, 2024

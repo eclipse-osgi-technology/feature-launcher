@@ -38,8 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Manages feature configurations via Configuration Admin Service for {@link org.eclipse.osgi.technology.featurelauncher.launch.secondstage.FeatureLauncherImpl}
- * 
  * As defined in the following sections of the "160. Feature Launcher Service Specification":
  *  - 160.4.3.4
  *  - 160.4.3.5

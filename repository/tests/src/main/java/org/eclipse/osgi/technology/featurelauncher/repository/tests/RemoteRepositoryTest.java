@@ -49,11 +49,6 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 /**
- * Tests
- * {@link org.eclipse.osgi.technology.featurelauncher.repository.maven.impl.RemoteArtifactRepositoryImpl}
- * and
- * {@link org.eclipse.osgi.technology.featurelauncher.repository.maven.impl.ArtifactRepositoryFactoryImpl}
- * 
  * As defined in: "160.2.1.3 Remote Repositories"
  * 
  * @author Michael H. Siemaszko (mhs@into.software)

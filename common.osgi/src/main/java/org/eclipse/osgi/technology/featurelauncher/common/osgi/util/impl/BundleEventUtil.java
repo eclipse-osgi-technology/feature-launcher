@@ -23,7 +23,7 @@ import org.osgi.framework.BundleEvent;
 /**
  * Translate type of bundle lifecycle change into readable representation.
  * 
- * Based on: {@link org.ops4j.pax.exam.FrameworkEventUtils}
+ * Based on: <code>org.ops4j.pax.exam.FrameworkEventUtils</code>
  * 
  * @since Sep 19, 2024
  */

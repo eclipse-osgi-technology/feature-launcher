@@ -23,7 +23,7 @@ import org.osgi.framework.FrameworkEvent;
 /**
  * Translate type of event into readable representation.
  * 
- * Based on: {@link org.ops4j.pax.exam.FrameworkEventUtils}
+ * Based on: <code>org.ops4j.pax.exam.FrameworkEventUtils</code>
  * 
  * @since Sep 19, 2024
  */

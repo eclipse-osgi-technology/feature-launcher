@@ -27,7 +27,7 @@ import org.osgi.service.featurelauncher.decorator.FeatureExtensionHandler;
 
 /**
  * Implementation of
- * {@link org.eclipse.osgi.technology.featurelauncher.impl.decorator.BundleStartLevelsFeatureExtensionHandler}
+// * {@link FeatureExtensionHandler}
  * 
  * @author Michael H. Siemaszko (mhs@into.software)
  * @since Oct 19, 2024

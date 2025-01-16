@@ -18,7 +18,7 @@ import org.osgi.service.feature.FeatureService;
 import org.osgi.service.featurelauncher.decorator.FeatureExtensionHandler.FeatureExtensionHandlerBuilder;
 
 /**
- * Implementation of {@link org.osgi.service.featurelauncher.decorator.FeatureExtensionHandler.FeatureExtensionHandlerBuilder}
+ * Implementation of {@link FeatureExtensionHandlerBuilder}
  * 
  * @author Michael H. Siemaszko (mhs@into.software)
  * @since Oct 19, 2024

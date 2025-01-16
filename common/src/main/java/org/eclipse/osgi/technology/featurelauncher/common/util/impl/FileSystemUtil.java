@@ -41,10 +41,6 @@ public class FileSystemUtil {
 		}
 	}
 
-	/**
-	 * Based on:
-	 * {@link aQute.bnd.test.jupiter.TemporaryDirectoryExtension.delete(Path)}
-	 **/
 	public static void recursivelyDelete(Path path) throws IOException {
 		path = path.toAbsolutePath();
 		if (Files.notExists(path) && !Files.isSymbolicLink(path)) {

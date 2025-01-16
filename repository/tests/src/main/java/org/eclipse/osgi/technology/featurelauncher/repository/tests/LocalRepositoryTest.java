@@ -33,11 +33,6 @@ import org.junit.jupiter.api.Test;
 import org.osgi.service.feature.ID;
 
 /**
- * Tests
- * {@link org.eclipse.osgi.technology.featurelauncher.repository.maven.impl.LocalArtifactRepositoryImpl}
- * and
- * {@link org.eclipse.osgi.technology.featurelauncher.repository.maven.impl.ArtifactRepositoryFactoryImpl}
- * 
  * As defined in: "160.2.1.2 Local Repositories"
  * 
  * @author Michael H. Siemaszko (mhs@into.software)

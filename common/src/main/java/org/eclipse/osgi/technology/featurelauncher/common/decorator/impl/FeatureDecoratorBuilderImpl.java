@@ -24,7 +24,7 @@ import org.osgi.service.feature.FeatureService;
 import org.osgi.service.featurelauncher.decorator.FeatureDecorator.FeatureDecoratorBuilder;
 
 /**
- * Implementation of {@link org.osgi.service.featurelauncher.decorator.FeatureDecorator.FeatureDecoratorBuilder}
+ * Implementation of {@link FeatureDecoratorBuilder}
  * 
  * @author Michael H. Siemaszko (mhs@into.software)
  * @since Oct 19, 2024

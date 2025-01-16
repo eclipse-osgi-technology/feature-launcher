@@ -40,7 +40,7 @@ import org.eclipse.osgi.technology.featurelauncher.repository.spi.FileSystemRepo
 import org.eclipse.osgi.technology.featurelauncher.repository.spi.Repository;
 
 /**
- * Implementation of {@link org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.common.decorator.impl.LaunchFrameworkFeatureExtensionHandler}
+ * Implementation of {@link FeatureExtensionHandler}
  * 
  * @author Michael H. Siemaszko (mhs@into.software)
  * @since Sep 15, 2024

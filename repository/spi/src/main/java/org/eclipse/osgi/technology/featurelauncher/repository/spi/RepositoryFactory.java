@@ -24,7 +24,7 @@ public interface RepositoryFactory {
 	 * 
 	 * @param path a path to the root of a Maven Repository Layout containing
 	 *            installable artifacts
-	 * @return an {@link ArtifactRepository} using the local file system
+	 * @return an {@link Repository} using the local file system
 	 * @throws IllegalArgumentException if the path does not exist, or exists
 	 *             and is not a directory
 	 * @throws NullPointerException if the path is <code>null</code>

@@ -14,7 +14,7 @@
 package org.eclipse.osgi.technology.featurelauncher.common.osgi.util.impl;
 
 /**
- * Util for {@link org.osgi.service.cm.ConfigurationAdmin}
+ * Util for @see org.osgi.service.cm.ConfigurationAdmin
  * 
  * @author Michael H. Siemaszko (mhs@into.software)
  * @since Oct 5, 2024
