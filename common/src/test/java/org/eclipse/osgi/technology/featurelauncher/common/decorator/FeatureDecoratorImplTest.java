@@ -11,7 +11,7 @@
  * Contributors:
  *     Kentyou - initial implementation
  */
-package org.eclipse.osgi.technology.featurelauncher.impl.decorator;
+package org.eclipse.osgi.technology.featurelauncher.common.decorator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

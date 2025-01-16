@@ -11,7 +11,7 @@
  * Contributors:
  *     Kentyou - initial implementation
  */
-package org.eclipse.osgi.technology.featurelauncher.impl;
+package org.eclipse.osgi.technology.featurelauncher.launch.launcher;
 
 import static org.eclipse.osgi.technology.featurelauncher.repository.spi.RepositoryConstants.DEFAULT_REMOTE_ARTIFACT_REPOSITORY_NAME;
 import static org.eclipse.osgi.technology.featurelauncher.repository.spi.RepositoryConstants.LOCAL_ARTIFACT_REPOSITORY_PATH;
