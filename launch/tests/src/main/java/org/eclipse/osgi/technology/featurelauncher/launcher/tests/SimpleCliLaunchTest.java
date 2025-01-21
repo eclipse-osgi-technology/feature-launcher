@@ -89,7 +89,7 @@ public class SimpleCliLaunchTest {
 	    BufferedReader errReader = p.errorReader();
 	    BufferedWriter writer = p.outputWriter();
 	    char[] c = new char[4096];
-	    for(int i = 0; i < 100 && p.isAlive(); i++) {
+	    for(int i = 0; i < 100; i++) {
 	    	while(reader.ready()) {
 	    		output.write(c, 0, reader.read(c));
 	    	}
@@ -106,7 +106,11 @@ public class SimpleCliLaunchTest {
 	    	} else if (read > 0){
 	    		output.write(c, 0, read);
 	    	}
-	    	Thread.sleep(100);
+	    	if(p.isAlive()) {
+	    		Thread.sleep(100);
+	    	} else if(i < 98) {
+	    		i = 98;
+	    	}
 	    }
 	    
 	    assertTrue(started, () -> getTestError(output, errOutput));
@@ -135,7 +139,7 @@ public class SimpleCliLaunchTest {
 	    		errReader.transferTo(errOutput);
 	    	} catch (IOException e) {
 	    	}
-	    	fail("Error: " + output.toString());
+	    	fail("Error: " + getTestError(output, errOutput));
 	    }
 	}
 
