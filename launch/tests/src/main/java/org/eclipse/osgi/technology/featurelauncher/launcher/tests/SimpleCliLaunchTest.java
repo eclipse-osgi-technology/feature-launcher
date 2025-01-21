@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,58 +89,58 @@ public class SimpleCliLaunchTest {
 	    BufferedReader reader = p.inputReader();
 	    BufferedReader errReader = p.errorReader();
 	    BufferedWriter writer = p.outputWriter();
-	    char[] c = new char[4096];
-	    for(int i = 0; i < 100; i++) {
-	    	while(reader.ready()) {
-	    		output.write(c, 0, reader.read(c));
-	    	}
-	    	while(errReader.ready()) {
-	    		errOutput.write(c, 0, errReader.read(c));
-	    	}
-	    	
-	    	writer.write("\n");
-	    	writer.flush();
-	    	int read = reader.read(c, 0, 2);
-	    	if(read == 2 && "g!".equals(new String(c, 0, 2))) {
-	    		started = true;
-	    		break;
-	    	} else if (read > 0){
-	    		output.write(c, 0, read);
-	    	}
-	    	if(p.isAlive()) {
-	    		Thread.sleep(100);
-	    	} else if(i < 98) {
-	    		i = 98;
-	    	}
-	    }
 	    
-	    assertTrue(started, () -> getTestError(output, errOutput));
+	    Supplier<String> errorMessage = () -> { 
+    		try {
+				reader.transferTo(output);
+			} catch (IOException e) {
+			}
+    		try {
+    			errReader.transferTo(errOutput);
+    		} catch (IOException e) {
+    		}
+    		return getTestError(output, errOutput);
+    	};
+	    
+    	try {
+    		char[] c = new char[4096];
+    		for(int i = 0; i < 100; i++) {
+    			while(reader.ready()) {
+    				output.write(c, 0, reader.read(c));
+    			}
+    			while(errReader.ready()) {
+    				errOutput.write(c, 0, errReader.read(c));
+    			}
+    			
+    			writer.write("\n");
+    			writer.flush();
+    			int read = reader.read(c, 0, 2);
+    			if(read == 2 && "g!".equals(new String(c, 0, 2))) {
+    				started = true;
+    				break;
+    			} else if (read > 0){
+    				output.write(c, 0, read);
+    			}
+    			if(p.isAlive()) {
+    				Thread.sleep(100);
+    			} else if(i < 98) {
+    				i = 98;
+    			}
+    		}
+    	} catch (Exception e) {
+    		p.destroyForcibly();
+    		fail(errorMessage.get(), e);
+    	}
+	    
+	    assertTrue(started, errorMessage);
 	    
 	    writer.write("stop 0\n");
 	    writer.flush();
 	    
 	    if(p.waitFor(10, TimeUnit.SECONDS)) {
-	    	assertEquals(0, p.exitValue(), () -> { 
-	    		try {
-					reader.transferTo(output);
-				} catch (IOException e) {
-				}
-	    		try {
-	    			errReader.transferTo(errOutput);
-	    		} catch (IOException e) {
-	    		}
-	    		return getTestError(output, errOutput);
-	    	});
+	    	assertEquals(0, p.exitValue(), errorMessage);
 	    } else {
-	    	try {
-				reader.transferTo(output);
-			} catch (IOException e) {
-			}
-	    	try {
-	    		errReader.transferTo(errOutput);
-	    	} catch (IOException e) {
-	    	}
-	    	fail("Error: " + getTestError(output, errOutput));
+	    	fail(errorMessage);
 	    }
 	}
 
