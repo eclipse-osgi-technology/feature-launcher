@@ -28,6 +28,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+import java.util.jar.Attributes.Name;
+import java.util.jar.JarFile;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,7 +63,14 @@ public class SimpleCliLaunchTest {
 		
 		return Files.list(p).filter(file -> {
 			String s = file.getFileName().toString();
-			return s.endsWith(".jar") && !s.endsWith("-tests.jar") && !s.startsWith("original-"); 
+			if(s.endsWith(".jar")) {
+				try (JarFile jar = new JarFile(file.toFile())) {
+					return jar.getManifest().getMainAttributes().containsKey(new Name("Main-Class"));
+				} catch (Exception e) {
+					throw new RuntimeException("Unable to open Jar file", e);
+				}
+			}
+			return false;
 		}).findFirst().get();
 	}
 	
