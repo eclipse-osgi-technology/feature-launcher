@@ -80,6 +80,12 @@
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.osgi-technology.featurelauncher</groupId>
+			<artifactId>common.osgi</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- default OSGi framework -->
 <!--		<dependency>
@@ -180,6 +186,11 @@
 						 			<groupId>org.eclipse.osgi-technology.featurelauncher.repository</groupId>
 						 			<artifactId>common.osgi</artifactId>
 						 			<destFileName>repo-common-osgi.jar</destFileName>
+							 	</artifactItem>
+							 	<artifactItem>
+						 			<groupId>org.eclipse.osgi-technology.featurelauncher</groupId>
+						 			<artifactId>common.osgi</artifactId>
+						 			<destFileName>common-osgi.jar</destFileName>
 							 	</artifactItem>
 							 </artifactItems>
 							 <outputDirectory>${project.build.outputDirectory}/META-INF/secondstage</outputDirectory>
