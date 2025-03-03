@@ -53,7 +53,7 @@
 	</repositories>
 
 	<name>Implementation of OSGi "160. Feature Launcher Service Specification"</name>
-	<url>https://github.com/kentyou/feature-launcher-prototype</url>
+	<url>https://github.com/eclipse-osgi-technology/feature-launcher</url>
 
 	<developers>
 		<developer>

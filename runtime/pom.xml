@@ -26,7 +26,7 @@
 	<packaging>jar</packaging>
 
 	<name>Implementation for OSGi "160. Feature Launcher Service Specification" Runtime</name>
-	<url>https://github.com/kentyou/feature-launcher-prototype</url>
+	<url>https://github.com/eclipse-osgi-technology/feature-launcher</url>
 
 	<properties>
 		<osgi.dependency.allowed>true</osgi.dependency.allowed>

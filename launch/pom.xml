@@ -26,7 +26,7 @@
 	<packaging>pom</packaging>
 
 	<name>Reactor for Feature Launcher Launch implementation code</name>
-	<url>https://github.com/kentyou/feature-launcher-prototype</url>
+	<url>https://github.com/eclipse-osgi-technology/feature-launcher</url>
 
 	<modules>
 		<module>spi</module>

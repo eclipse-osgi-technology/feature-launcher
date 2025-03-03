@@ -25,7 +25,7 @@
 	<packaging>jar</packaging>
 
 	<name>Feature Launcher Repository - OSGi common code without framework dependencies</name>
-	<url>https://github.com/kentyou/feature-launcher-prototype</url>
+	<url>https://github.com/eclipse-osgi-technology/feature-launcher</url>
 
 	<properties>
 		<featurelauncher.dependency.allowed>true</featurelauncher.dependency.allowed>

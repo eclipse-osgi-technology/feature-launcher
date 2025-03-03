@@ -26,7 +26,7 @@
 
 	<name>&quot;Lite&quot; Repository - no OSGi dependencies</name>
 	<description>A super lightweight repository implementation with minimal features and footprint</description>
-	<url>https://github.com/kentyou/feature-launcher-prototype</url>
+	<url>https://github.com/eclipse-osgi-technology/feature-launcher</url>
 
 	<dependencies>
 		<dependency>

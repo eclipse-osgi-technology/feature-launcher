@@ -26,7 +26,7 @@
 
 	<name>OSGi Feature Launcher executable - with Maven repo support</name>
 	<description>An all in one CLI executable for the OSGi Feature Launcher using the Maven Resolver Artifact Repository implementation</description>
-	<url>https://github.com/kentyou/feature-launcher-prototype</url>
+	<url>https://github.com/eclipse-osgi-technology/feature-launcher</url>
 
 	<properties>
 		<osgi.dependency.allowed>true</osgi.dependency.allowed>

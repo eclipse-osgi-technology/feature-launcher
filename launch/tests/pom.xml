@@ -26,7 +26,7 @@
 
 	<name>Feature Launcher - Launcher CLI Tests</name>
 	<description>Simple Tests for Launcher CLI packaging</description>
-	<url>https://github.com/kentyou/feature-launcher-prototype</url>
+	<url>https://github.com/eclipse-osgi-technology/feature-launcher</url>
 
 	<dependencies>
 		<dependency>

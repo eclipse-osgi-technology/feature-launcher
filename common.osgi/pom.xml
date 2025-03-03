@@ -26,7 +26,7 @@
 	<packaging>jar</packaging>
 
 	<name>Common Implementation objects for Feature Launcher and Runtime - OSGi API dependent</name>
-	<url>https://github.com/kentyou/feature-launcher-prototype</url>
+	<url>https://github.com/eclipse-osgi-technology/feature-launcher</url>
 
 	<properties>
 		<osgi.dependency.allowed>true</osgi.dependency.allowed>
