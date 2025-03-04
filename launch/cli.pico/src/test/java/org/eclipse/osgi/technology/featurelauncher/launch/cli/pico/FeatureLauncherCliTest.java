@@ -32,6 +32,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.osgi.technology.featurelauncher.repository.common.osgi.ArtifactRepositoryAdapter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -267,8 +268,8 @@ public class FeatureLauncherCliTest {
 		assertTrue(ssl.getFrameworkFactory().isEmpty());
 		assertTrue(ssl.getFrameworkProperties().containsKey("org.osgi.framework.storage"));
 		assertEquals(2, ssl.getRepositories().size());
-		assertEquals("testLocal", ssl.getRepositories().get(0).getName());
-		assertEquals("testRemote", ssl.getRepositories().get(1).getName());
+		assertEquals("testLocal", ((ArtifactRepositoryAdapter)ssl.getRepositories().get(0)).unwrap().getName());
+		assertEquals("testRemote", ((ArtifactRepositoryAdapter)ssl.getRepositories().get(1)).unwrap().getName());
 		assertEquals(Map.of(), ssl.getVariableOverrides());
 	}
 
@@ -304,8 +305,8 @@ public class FeatureLauncherCliTest {
 		assertTrue(ssl.getFrameworkFactory().isEmpty());
 		assertTrue(ssl.getFrameworkProperties().containsKey("org.osgi.framework.storage"));
 		assertEquals(2, ssl.getRepositories().size());
-		assertEquals("testLocal", ssl.getRepositories().get(0).getName());
-		assertEquals("testRemote", ssl.getRepositories().get(1).getName());
+		assertEquals("testLocal", ((ArtifactRepositoryAdapter)ssl.getRepositories().get(0)).unwrap().getName());
+		assertEquals("testRemote", ((ArtifactRepositoryAdapter)ssl.getRepositories().get(1)).unwrap().getName());
 		assertEquals(Map.of(), ssl.getVariableOverrides());
 	}
 

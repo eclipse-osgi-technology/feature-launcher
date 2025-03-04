@@ -13,11 +13,14 @@
  */
 package org.eclipse.osgi.technology.featurelauncher.launch.cli.pico;
 
+import java.util.List;
+
 import org.osgi.service.feature.Feature;
 import org.osgi.service.feature.FeatureExtension;
 import org.osgi.service.featurelauncher.decorator.AbandonOperationException;
 import org.osgi.service.featurelauncher.decorator.DecoratorBuilderFactory;
 import org.osgi.service.featurelauncher.decorator.FeatureExtensionHandler;
+import org.osgi.service.featurelauncher.repository.ArtifactRepository;
 
 public class AddVariableExtensionHandler implements FeatureExtensionHandler {
 
@@ -27,6 +30,7 @@ public class AddVariableExtensionHandler implements FeatureExtensionHandler {
 	 */
 	@Override
 	public Feature handle(Feature feature, FeatureExtension extension,
+			List<ArtifactRepository> repositories,
 			FeatureExtensionHandlerBuilder decoratedFeatureBuilder, DecoratorBuilderFactory factory)
 			throws AbandonOperationException {
 		return decoratedFeatureBuilder

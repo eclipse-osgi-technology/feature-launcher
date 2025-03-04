@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.DecorationContext;
+import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.MutableRepositoryList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.osgi.service.feature.Feature;
@@ -41,6 +42,7 @@ import org.osgi.service.feature.ID;
 import org.osgi.service.featurelauncher.decorator.AbandonOperationException;
 import org.osgi.service.featurelauncher.decorator.DecoratorBuilderFactory;
 import org.osgi.service.featurelauncher.decorator.FeatureExtensionHandler;
+import org.osgi.service.featurelauncher.repository.ArtifactRepository;
 
 /**
  * Tests
@@ -62,7 +64,7 @@ public class FeatureExtensionHandlerImplTest {
 		// Load the Feature Service
 		featureService = ServiceLoader.load(FeatureService.class).findFirst().get();
 
-		util = new DecorationContext<>((f,e,b,d) -> f, List.of());
+		util = new DecorationContext<>((f,e,r,b,d) -> f);
 		
 		// Read feature
 		Path featureJSONPath = Paths
@@ -91,6 +93,7 @@ public class FeatureExtensionHandlerImplTest {
 
 			@Override
 			public Feature handle(Feature feature, FeatureExtension extension,
+					List<ArtifactRepository> repositories,
 					FeatureExtensionHandlerBuilder decoratedFeatureBuilder, DecoratorBuilderFactory factory)
 					throws AbandonOperationException {
 
@@ -106,7 +109,7 @@ public class FeatureExtensionHandlerImplTest {
 		};
 
 		Feature decoratedFeature = util.executeFeatureExtensionHandlers(featureService, feature,
-				Map.of(FEATURE_EXTENSION_NAME, featureBundlesExtensionHandler));
+				new MutableRepositoryList(), Map.of(FEATURE_EXTENSION_NAME, featureBundlesExtensionHandler));
 		assertNotNull(decoratedFeature);
 
 		assertEquals(feature.getName(), decoratedFeature.getName());
@@ -136,6 +139,7 @@ public class FeatureExtensionHandlerImplTest {
 
 			@Override
 			public Feature handle(Feature feature, FeatureExtension extension,
+					List<ArtifactRepository> repositories,
 					FeatureExtensionHandlerBuilder decoratedFeatureBuilder, DecoratorBuilderFactory factory)
 					throws AbandonOperationException {
 
@@ -148,7 +152,7 @@ public class FeatureExtensionHandlerImplTest {
 		};
 
 		Feature decoratedFeature = util.executeFeatureExtensionHandlers(featureService, feature,
-				Map.of(FEATURE_EXTENSION_NAME, featureConfigurationsExtensionHandler));
+				new MutableRepositoryList(), Map.of(FEATURE_EXTENSION_NAME, featureConfigurationsExtensionHandler));
 		assertNotNull(decoratedFeature);
 
 		assertEquals(feature.getName(), decoratedFeature.getName());
@@ -177,6 +181,7 @@ public class FeatureExtensionHandlerImplTest {
 
 			@Override
 			public Feature handle(Feature feature, FeatureExtension extension,
+					List<ArtifactRepository> repositories,
 					FeatureExtensionHandlerBuilder decoratedFeatureBuilder, DecoratorBuilderFactory factory)
 					throws AbandonOperationException {
 
@@ -186,7 +191,7 @@ public class FeatureExtensionHandlerImplTest {
 		};
 
 		Feature decoratedFeature = util.executeFeatureExtensionHandlers(featureService, feature,
-				Map.of(FEATURE_EXTENSION_NAME, featureVariablesExtensionHandler));
+				new MutableRepositoryList(), Map.of(FEATURE_EXTENSION_NAME, featureVariablesExtensionHandler));
 		assertNotNull(decoratedFeature);
 
 		assertEquals(feature.getName(), decoratedFeature.getName());
@@ -214,6 +219,7 @@ public class FeatureExtensionHandlerImplTest {
 
 			@Override
 			public Feature handle(Feature feature, FeatureExtension extension,
+					List<ArtifactRepository> repositories,
 					FeatureExtensionHandlerBuilder decoratedFeatureBuilder, DecoratorBuilderFactory factory)
 					throws AbandonOperationException {
 
@@ -222,7 +228,7 @@ public class FeatureExtensionHandlerImplTest {
 		};
 
 		Feature decoratedFeature = util.executeFeatureExtensionHandlers(featureService, feature,
-				Map.of(FEATURE_EXTENSION_NAME, featureNoOpExtensionHandler));
+				new MutableRepositoryList(), Map.of(FEATURE_EXTENSION_NAME, featureNoOpExtensionHandler));
 		assertNotNull(decoratedFeature);
 
 		assertEquals(feature.getName(), decoratedFeature.getName());
@@ -250,6 +256,7 @@ public class FeatureExtensionHandlerImplTest {
 
 			@Override
 			public Feature handle(Feature feature, FeatureExtension extension,
+					List<ArtifactRepository> repositories,
 					FeatureExtensionHandlerBuilder decoratedFeatureBuilder, DecoratorBuilderFactory factory)
 					throws AbandonOperationException {
 
@@ -261,7 +268,7 @@ public class FeatureExtensionHandlerImplTest {
 
 		assertThrows(AbandonOperationException.class,
 				() -> util.executeFeatureExtensionHandlers(featureService, feature,
-						Map.of(FEATURE_EXTENSION_NAME, featureInvalidExtensionHandler)));
+						new MutableRepositoryList(), Map.of(FEATURE_EXTENSION_NAME, featureInvalidExtensionHandler)));
 	}
 
 	@Test
@@ -271,6 +278,6 @@ public class FeatureExtensionHandlerImplTest {
 		assertEquals(FEATURE_EXTENSION_NAME, featureExtensions.get(FEATURE_EXTENSION_NAME).getName());
 
 		assertThrows(AbandonOperationException.class, () -> util
-				.executeFeatureExtensionHandlers(featureService, feature, Collections.emptyMap()));
+				.executeFeatureExtensionHandlers(featureService, feature, new MutableRepositoryList(), Collections.emptyMap()));
 	}
 }
