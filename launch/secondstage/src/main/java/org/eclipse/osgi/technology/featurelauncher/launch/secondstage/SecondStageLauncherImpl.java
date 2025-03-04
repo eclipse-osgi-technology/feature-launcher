@@ -13,7 +13,6 @@
  */
 package org.eclipse.osgi.technology.featurelauncher.launch.secondstage;
 
-import static java.util.stream.Collectors.toList;
 import static org.eclipse.osgi.technology.featurelauncher.launch.secondstage.FeatureLauncherConfigurationManager.CONFIGURATION_TIMEOUT_DEFAULT;
 import static org.osgi.service.featurelauncher.FeatureLauncherConstants.BUNDLE_START_LEVEL_METADATA;
 import static org.osgi.service.featurelauncher.FeatureLauncherConstants.CONFIGURATION_TIMEOUT;
@@ -38,8 +37,6 @@ import org.eclipse.osgi.technology.featurelauncher.common.osgi.util.impl.Framewo
 import org.eclipse.osgi.technology.featurelauncher.common.util.impl.FileSystemUtil;
 import org.eclipse.osgi.technology.featurelauncher.common.util.impl.VariablesUtil;
 import org.eclipse.osgi.technology.featurelauncher.launch.spi.SecondStageLauncher;
-import org.eclipse.osgi.technology.featurelauncher.repository.common.osgi.ArtifactRepositoryAdapter;
-import org.eclipse.osgi.technology.featurelauncher.repository.spi.Repository;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -69,12 +66,10 @@ public class SecondStageLauncherImpl implements SecondStageLauncher {
 
 	@Override
 	public LaunchResult launch(Feature feature, DecorationContext<?> context,
-			List<? extends Repository> repositories, Optional<Object> frameworkFactory,
+			List<? extends ArtifactRepository> repositories, Optional<Object> frameworkFactory,
 			Map<String, Object> variableOverrides, Map<String, Object> configurationProperties,
 			Map<String, String> frameworkProperties) {
-		List<ArtifactRepository> artifactRepos = repositories.stream().map(ArtifactRepositoryAdapter::new)
-				.collect(toList());
-		Framework fwk = launchFramework(feature, context, artifactRepos, frameworkFactory,
+		Framework fwk = launchFramework(feature, context, repositories, frameworkFactory,
 				variableOverrides, configurationProperties, frameworkProperties);
 		return t -> fwk.waitForStop(t);
 	}

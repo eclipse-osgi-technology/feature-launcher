@@ -33,9 +33,12 @@ import org.osgi.service.feature.ID;
 import org.osgi.service.featurelauncher.decorator.AbandonOperationException;
 import org.osgi.service.featurelauncher.decorator.DecoratorBuilderFactory;
 import org.osgi.service.featurelauncher.decorator.FeatureExtensionHandler;
+import org.osgi.service.featurelauncher.repository.ArtifactRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.eclipse.osgi.technology.featurelauncher.common.repository.impl.WrappingRepository;
+import org.eclipse.osgi.technology.featurelauncher.repository.common.osgi.ArtifactRepositoryAdapter;
+import org.eclipse.osgi.technology.featurelauncher.repository.common.osgi.RepositoryAdapter;
 import org.eclipse.osgi.technology.featurelauncher.repository.spi.FileSystemRepository;
 import org.eclipse.osgi.technology.featurelauncher.repository.spi.Repository;
 
@@ -50,13 +53,7 @@ public class LaunchFrameworkFeatureExtensionHandler implements FeatureExtensionH
 
 	private static final String FF_SERVICE_PATH = "META-INF/services/org.osgi.framework.launch.FrameworkFactory";
 	
-	private final List<? extends Repository> artifactRepositories;
-	
 	private Optional<Object> locatedFramework = Optional.empty();
-
-	public LaunchFrameworkFeatureExtensionHandler(List<? extends Repository> artifactRepositories) {
-		this.artifactRepositories = artifactRepositories;
-	}
 
 	/* 
 	 * (non-Javadoc)
@@ -64,6 +61,7 @@ public class LaunchFrameworkFeatureExtensionHandler implements FeatureExtensionH
 	 */
 	@Override
 	public Feature handle(Feature feature, FeatureExtension extension,
+			List<ArtifactRepository> repositories,
 			FeatureExtensionHandlerBuilder decoratedFeatureBuilder, DecoratorBuilderFactory factory)
 			throws AbandonOperationException {
 		
@@ -78,7 +76,7 @@ public class LaunchFrameworkFeatureExtensionHandler implements FeatureExtensionH
 		}
 		
 		for (FeatureArtifact featureArtifact : extension.getArtifacts()) {
-			locatedFramework = findFrameworkFactory(featureArtifact);
+			locatedFramework = findFrameworkFactory(featureArtifact, repositories);
 			if(locatedFramework.isPresent()) {
 				break;
 			}
@@ -95,8 +93,9 @@ public class LaunchFrameworkFeatureExtensionHandler implements FeatureExtensionH
 		return locatedFramework;
 	}
 		
-	private Optional<Object> findFrameworkFactory(FeatureArtifact featureArtifact) {
-		Path artifactPath = getArtifactPath(featureArtifact.getID(), artifactRepositories);
+	private Optional<Object> findFrameworkFactory(FeatureArtifact featureArtifact,
+			List<ArtifactRepository> repositories) {
+		Path artifactPath = getArtifactPath(featureArtifact.getID(), repositories);
 		
 		if(artifactPath == null) {
 			LOG.debug("Unable to find the framework artifact {}", featureArtifact.getID());
@@ -172,14 +171,26 @@ public class LaunchFrameworkFeatureExtensionHandler implements FeatureExtensionH
 		return Optional.empty();
 	}
 
-	private Path getArtifactPath(ID artifactId, List<? extends Repository> repositories) {
-		for (Repository repo : repositories) {
-			Path artifactPath = ((FileSystemRepository) repo).getArtifactPath(artifactId);
-			if (artifactPath != null) {
-				return artifactPath;
+	public static Path getArtifactPath(ID artifactId, List<ArtifactRepository> repositories) {
+		for (ArtifactRepository artifactRepository : repositories) {
+			Repository r;
+			if(ArtifactRepositoryAdapter.class.isInstance(artifactRepository)) {
+				r = ((ArtifactRepositoryAdapter)artifactRepository).unwrap();
+			} else {
+				r = new RepositoryAdapter(artifactRepository);
+			}
+			FileSystemRepository fsr;
+			if(r instanceof FileSystemRepository) {
+				fsr = (FileSystemRepository) r;
+			} else {
+				fsr = new WrappingRepository(r, r.getName());
+			}
+			
+			Path featureBundlePath = fsr.getArtifactPath(artifactId);
+			if (featureBundlePath != null) {
+				return featureBundlePath;
 			}
 		}
-
 		return null;
 	}
 }

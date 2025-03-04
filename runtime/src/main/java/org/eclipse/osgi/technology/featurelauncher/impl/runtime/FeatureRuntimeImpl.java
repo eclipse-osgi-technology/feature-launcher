@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,11 +42,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.DecorationContext;
-import org.eclipse.osgi.technology.featurelauncher.common.repository.impl.WrappingRepository;
+import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.LaunchFrameworkFeatureExtensionHandler;
+import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.MutableRepositoryList;
 import org.eclipse.osgi.technology.featurelauncher.repository.common.osgi.ArtifactRepositoryAdapter;
-import org.eclipse.osgi.technology.featurelauncher.repository.common.osgi.RepositoryAdapter;
-import org.eclipse.osgi.technology.featurelauncher.repository.spi.FileSystemRepository;
-import org.eclipse.osgi.technology.featurelauncher.repository.spi.Repository;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -318,6 +317,8 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 		protected Map<String, Object> variables;
 		protected List<FeatureDecorator> decorators;
 		protected Map<String, FeatureExtensionHandler> extensionHandlers;
+		
+		protected final MutableRepositoryList completedRepositories = new MutableRepositoryList();
 
 		public AbstractOperationBuilderImpl(Feature feature) {
 			Objects.requireNonNull(feature, "Feature cannot be null!");
@@ -325,7 +326,7 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 			this.feature = feature;
 			this.isCompleted = false;
 			this.useDefaultRepositories = true;
-			this.artifactRepositories = new HashMap<>();
+			this.artifactRepositories = new LinkedHashMap<>();
 			this.variables = new HashMap<>();
 			this.decorators = new ArrayList<>();
 			this.extensionHandlers = new HashMap<>();
@@ -447,16 +448,14 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 			if (this.useDefaultRepositories) {
 				getDefaultRepositories().forEach((k, v) -> this.artifactRepositories.putIfAbsent(k, v));
 			}
+			
+			this.completedRepositories.addAll(this.artifactRepositories.values());
 
-			FeatureExtensionHandler launchHandler = (f, fe, x, y) -> {
+			FeatureExtensionHandler launchHandler = (f, fe, r, x, y) -> {
 				LOG.warn("The feature {} defines a launch extension, but is being installed into a running framework.", f.getID());
 				return f;
 			};
-			decorationUtil = new DecorationContext<>(launchHandler,
-					this.artifactRepositories.entrySet().stream()
-						.map(e -> e.getValue() instanceof ArtifactRepositoryAdapter ?
-								((ArtifactRepositoryAdapter)e.getValue()).unwrap() : new RepositoryAdapter(e.getValue(), e.getKey()))
-						.collect(Collectors.toList()));
+			decorationUtil = new DecorationContext<>(launchHandler);
 
 			return addOrUpdateFeature(feature);
 		}
@@ -493,9 +492,11 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 			// Feature Decoration
 			Feature originalFeature = feature;
 			try {
-				feature = decorationUtil.executeFeatureDecorators(featureService, feature, decorators);
+				feature = decorationUtil.executeFeatureDecorators(featureService,
+						feature, this.completedRepositories, decorators);
 
-				feature = decorationUtil.executeFeatureExtensionHandlers(featureService, feature, extensionHandlers);
+				feature = decorationUtil.executeFeatureExtensionHandlers(featureService, feature,
+						this.completedRepositories, extensionHandlers);
 			} catch (AbandonOperationException e) {
 				throw new FeatureRuntimeException("Feature decoration handling failed!", e);
 			}
@@ -1021,7 +1022,7 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 			if (bundleIdsToSymbolicNamesVersions.containsKey(featureBundleID)) {
 				return bundleIdsToSymbolicNamesVersions.get(featureBundleID);
 			} else {
-				Path featureBundlePath = getArtifactPath(featureBundleID);
+				Path featureBundlePath = LaunchFrameworkFeatureExtensionHandler.getArtifactPath(featureBundleID, completedRepositories);
 				if (featureBundlePath != null) {
 					try (JarFile featureBundleJarFile = new JarFile(featureBundlePath.toFile())) {
 						Manifest featureBundleJarMf = featureBundleJarFile.getManifest();
@@ -1059,32 +1060,32 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 			// @formatter:on
 		}
 
-		protected Path getArtifactPath(ID featureBundleID) {
-			for (ArtifactRepository artifactRepository : artifactRepositories.values()) {
-				Repository r;
-				if(ArtifactRepositoryAdapter.class.isInstance(artifactRepository)) {
-					r = ((ArtifactRepositoryAdapter)artifactRepository).unwrap();
-				} else {
-					r = new RepositoryAdapter(artifactRepository);
-				}
-				FileSystemRepository fsr;
-				if(r instanceof FileSystemRepository) {
-					fsr = (FileSystemRepository) r;
-				} else {
-					fsr = new WrappingRepository(r, r.getName());
-				}
-				
-				Path featureBundlePath = fsr.getArtifactPath(featureBundleID);
-				if (featureBundlePath != null) {
-					return featureBundlePath;
-				}
-			}
-
-			return null;
-		}
+//		protected Path getArtifactPath(ID featureBundleID) {
+//			for (ArtifactRepository artifactRepository : completedRepositories) {
+//				Repository r;
+//				if(ArtifactRepositoryAdapter.class.isInstance(artifactRepository)) {
+//					r = ((ArtifactRepositoryAdapter)artifactRepository).unwrap();
+//				} else {
+//					r = new RepositoryAdapter(artifactRepository);
+//				}
+//				FileSystemRepository fsr;
+//				if(r instanceof FileSystemRepository) {
+//					fsr = (FileSystemRepository) r;
+//				} else {
+//					fsr = new WrappingRepository(r, r.getName());
+//				}
+//				
+//				Path featureBundlePath = fsr.getArtifactPath(featureBundleID);
+//				if (featureBundlePath != null) {
+//					return featureBundlePath;
+//				}
+//			}
+//
+//			return null;
+//		}
 
 		protected InputStream getArtifact(ID featureBundleID) {
-			for (ArtifactRepository artifactRepository : artifactRepositories.values()) {
+			for (ArtifactRepository artifactRepository : completedRepositories) {
 				InputStream featureBundleIs = artifactRepository.getArtifact(featureBundleID);
 				if (featureBundleIs != null) {
 					return featureBundleIs;

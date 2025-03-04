@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.DecorationContext;
+import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.MutableRepositoryList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.osgi.service.feature.Feature;
@@ -40,7 +41,7 @@ import org.osgi.service.feature.ID;
 import org.osgi.service.featurelauncher.decorator.AbandonOperationException;
 import org.osgi.service.featurelauncher.decorator.DecoratorBuilderFactory;
 import org.osgi.service.featurelauncher.decorator.FeatureDecorator;
-import org.osgi.service.featurelauncher.decorator.FeatureExtensionHandler;
+import org.osgi.service.featurelauncher.repository.ArtifactRepository;
 
 /**
  * Tests
@@ -53,14 +54,14 @@ import org.osgi.service.featurelauncher.decorator.FeatureExtensionHandler;
 public class FeatureDecoratorImplTest {
 	FeatureService featureService;
 	Feature feature;
-	DecorationContext<FeatureExtensionHandler> util;
+	DecorationContext<?> util;
 
 	@BeforeEach
 	public void setUp() throws URISyntaxException, IOException {
 		// Load the Feature Service
 		featureService = ServiceLoader.load(FeatureService.class).findFirst().get();
 
-		util = new DecorationContext<>((f,e,b,d) -> f, List.of());
+		util = new DecorationContext<>((f,e,r,b,d) -> f);
 
 		// Read feature
 		Path featureJSONPath = Paths.get(getClass().getResource("/features/gogo-console-feature.json").toURI());
@@ -83,7 +84,8 @@ public class FeatureDecoratorImplTest {
 		FeatureDecorator featureBundlesDecorator = new FeatureDecorator() {
 
 			@Override
-			public Feature decorate(Feature feature, FeatureDecoratorBuilder decoratedFeatureBuilder,
+			public Feature decorate(Feature feature, List<ArtifactRepository> repositories,
+					FeatureDecoratorBuilder decoratedFeatureBuilder,
 					DecoratorBuilderFactory factory) throws AbandonOperationException {
 
 				ID slf4jApiId = featureService.getID("org.slf4j", "slf4j-api", "2.0.9");
@@ -98,7 +100,7 @@ public class FeatureDecoratorImplTest {
 		};
 
 		Feature decoratedFeature = util.executeFeatureDecorators(featureService, feature,
-				List.of(featureBundlesDecorator));
+				new MutableRepositoryList(), List.of(featureBundlesDecorator));
 		assertNotNull(decoratedFeature);
 
 		assertEquals(feature.getName(), decoratedFeature.getName());
@@ -122,7 +124,8 @@ public class FeatureDecoratorImplTest {
 		FeatureDecorator featureConfigurationsDecorator = new FeatureDecorator() {
 
 			@Override
-			public Feature decorate(Feature feature, FeatureDecoratorBuilder decoratedFeatureBuilder,
+			public Feature decorate(Feature feature, List<ArtifactRepository> repositories,
+					FeatureDecoratorBuilder decoratedFeatureBuilder,
 					DecoratorBuilderFactory factory) throws AbandonOperationException {
 
 				FeatureConfiguration testFeatureConfiguration = factory
@@ -134,7 +137,7 @@ public class FeatureDecoratorImplTest {
 		};
 
 		Feature decoratedFeature = util.executeFeatureDecorators(featureService, feature,
-				List.of(featureConfigurationsDecorator));
+				new MutableRepositoryList(), List.of(featureConfigurationsDecorator));
 		assertNotNull(decoratedFeature);
 
 		assertEquals(feature.getName(), decoratedFeature.getName());
@@ -157,7 +160,8 @@ public class FeatureDecoratorImplTest {
 		FeatureDecorator featureVariablesDecorator = new FeatureDecorator() {
 
 			@Override
-			public Feature decorate(Feature feature, FeatureDecoratorBuilder decoratedFeatureBuilder,
+			public Feature decorate(Feature feature, List<ArtifactRepository> repositories,
+					FeatureDecoratorBuilder decoratedFeatureBuilder,
 					DecoratorBuilderFactory factory) throws AbandonOperationException {
 
 				return decoratedFeatureBuilder.setVariables(Map.of("var1key", "var1value", "var2key", "var2value"))
@@ -166,7 +170,7 @@ public class FeatureDecoratorImplTest {
 		};
 
 		Feature decoratedFeature = util.executeFeatureDecorators(featureService, feature,
-				List.of(featureVariablesDecorator));
+				new MutableRepositoryList(), List.of(featureVariablesDecorator));
 		assertNotNull(decoratedFeature);
 
 		assertEquals(feature.getName(), decoratedFeature.getName());
@@ -187,7 +191,8 @@ public class FeatureDecoratorImplTest {
 		FeatureDecorator featureExtensionsDecorator = new FeatureDecorator() {
 
 			@Override
-			public Feature decorate(Feature feature, FeatureDecoratorBuilder decoratedFeatureBuilder,
+			public Feature decorate(Feature feature, List<ArtifactRepository> repositories,
+					FeatureDecoratorBuilder decoratedFeatureBuilder,
 					DecoratorBuilderFactory factory) throws AbandonOperationException {
 
 				FeatureExtension testFeatureExtension = factory.newExtensionBuilder(testFeatureExtensionName,
@@ -198,7 +203,7 @@ public class FeatureDecoratorImplTest {
 		};
 
 		Feature decoratedFeature = util.executeFeatureDecorators(featureService, feature,
-				List.of(featureExtensionsDecorator));
+				new MutableRepositoryList(), List.of(featureExtensionsDecorator));
 		assertNotNull(decoratedFeature);
 
 		assertEquals(feature.getName(), decoratedFeature.getName());
@@ -224,7 +229,8 @@ public class FeatureDecoratorImplTest {
 		FeatureDecorator featureNoOpDecorator = new FeatureDecorator() {
 
 			@Override
-			public Feature decorate(Feature feature, FeatureDecoratorBuilder decoratedFeatureBuilder,
+			public Feature decorate(Feature feature, List<ArtifactRepository> repositories,
+					FeatureDecoratorBuilder decoratedFeatureBuilder,
 					DecoratorBuilderFactory factory) throws AbandonOperationException {
 
 				return feature;
@@ -232,7 +238,7 @@ public class FeatureDecoratorImplTest {
 		};
 
 		Feature decoratedFeature = util.executeFeatureDecorators(featureService, feature,
-				List.of(featureNoOpDecorator));
+				new MutableRepositoryList(), List.of(featureNoOpDecorator));
 		assertNotNull(decoratedFeature);
 
 		assertEquals(feature.getName(), decoratedFeature.getName());
@@ -255,7 +261,8 @@ public class FeatureDecoratorImplTest {
 		FeatureDecorator featureInvalidDecorator = new FeatureDecorator() {
 
 			@Override
-			public Feature decorate(Feature feature, FeatureDecoratorBuilder decoratedFeatureBuilder,
+			public Feature decorate(Feature feature, List<ArtifactRepository> repositories,
+					FeatureDecoratorBuilder decoratedFeatureBuilder,
 					DecoratorBuilderFactory factory) throws AbandonOperationException {
 
 				ID invalidFeatureID = featureService.getID("someGroupId", "someArtifactId", "0.0.0");
@@ -265,6 +272,7 @@ public class FeatureDecoratorImplTest {
 		};
 
 		assertThrows(AbandonOperationException.class, () -> util
-				.executeFeatureDecorators(featureService, feature, List.of(featureInvalidDecorator)));
+				.executeFeatureDecorators(featureService, feature,
+						new MutableRepositoryList(), List.of(featureInvalidDecorator)));
 	}
 }

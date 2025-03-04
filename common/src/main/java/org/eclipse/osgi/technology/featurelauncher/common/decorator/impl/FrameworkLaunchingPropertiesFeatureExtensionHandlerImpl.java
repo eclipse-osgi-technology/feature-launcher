@@ -15,6 +15,7 @@ package org.eclipse.osgi.technology.featurelauncher.common.decorator.impl;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.osgi.technology.featurelauncher.common.util.impl.VariablesUtil;
@@ -23,6 +24,7 @@ import org.osgi.service.feature.FeatureExtension;
 import org.osgi.service.featurelauncher.decorator.AbandonOperationException;
 import org.osgi.service.featurelauncher.decorator.DecoratorBuilderFactory;
 import org.osgi.service.featurelauncher.decorator.FeatureExtensionHandler;
+import org.osgi.service.featurelauncher.repository.ArtifactRepository;
 
 
 /**
@@ -48,6 +50,7 @@ public class FrameworkLaunchingPropertiesFeatureExtensionHandlerImpl
 	 */
 	@Override
 	public Feature handle(Feature feature, FeatureExtension extension,
+			List<ArtifactRepository> repositories,
 			FeatureExtensionHandlerBuilder decoratedFeatureBuilder, DecoratorBuilderFactory factory)
 			throws AbandonOperationException {
 
