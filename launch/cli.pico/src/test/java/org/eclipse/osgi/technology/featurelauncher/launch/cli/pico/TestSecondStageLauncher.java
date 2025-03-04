@@ -19,10 +19,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.DecorationContext;
-import org.osgi.service.feature.Feature;
-
-import org.eclipse.osgi.technology.featurelauncher.repository.spi.Repository;
 import org.eclipse.osgi.technology.featurelauncher.launch.spi.SecondStageLauncher;
+import org.osgi.service.feature.Feature;
+import org.osgi.service.featurelauncher.repository.ArtifactRepository;
 
 public class TestSecondStageLauncher implements SecondStageLauncher {
 
@@ -31,14 +30,14 @@ public class TestSecondStageLauncher implements SecondStageLauncher {
 	private boolean called = false;
 	private Feature feature;
 	private DecorationContext<?> context;
-	private List<? extends Repository> repositories;
+	private List<? extends ArtifactRepository> repositories;
 	private Optional<Object> frameworkFactory;
 	private Map<String, Object> variableOverrides;
 	private Map<String, Object> configurationProperties;
 	private Map<String, String> frameworkProperties;
 
 	@Override
-	public LaunchResult launch(Feature feature, DecorationContext<?> context, List<? extends Repository> repositories,
+	public LaunchResult launch(Feature feature, DecorationContext<?> context, List<? extends ArtifactRepository> repositories,
 			Optional<Object> frameworkFactory, Map<String, Object> variableOverrides,
 			Map<String, Object> configurationProperties, Map<String, String> frameworkProperties) {
 
@@ -73,7 +72,7 @@ public class TestSecondStageLauncher implements SecondStageLauncher {
 		return context;
 	}
 
-	public List<? extends Repository> getRepositories() {
+	public List<? extends ArtifactRepository> getRepositories() {
 		return repositories;
 	}
 

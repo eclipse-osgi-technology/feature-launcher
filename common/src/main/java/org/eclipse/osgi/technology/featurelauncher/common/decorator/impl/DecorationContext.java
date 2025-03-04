@@ -31,8 +31,6 @@ import org.osgi.service.featurelauncher.decorator.FeatureExtensionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.eclipse.osgi.technology.featurelauncher.repository.spi.Repository;
-
 import jakarta.json.Json;
 import jakarta.json.JsonNumber;
 import jakarta.json.JsonObject;
@@ -56,7 +54,7 @@ public class DecorationContext<T extends FeatureExtensionHandler> {
 	private final BundleStartLevelsFeatureExtensionHandlerImpl startLevelHandler = new BundleStartLevelsFeatureExtensionHandlerImpl();
 	private final Map<String, FeatureExtensionHandler> handlers;
 	
-	public DecorationContext(T launchHandler, List<? extends Repository> repositories) {
+	public DecorationContext(T launchHandler) {
 		this.launchHandler = launchHandler;
 		// @formatter:off
 		handlers = Map.ofEntries(
@@ -79,6 +77,7 @@ public class DecorationContext<T extends FeatureExtensionHandler> {
 	}
 
 	public Feature executeFeatureDecorators(FeatureService featureService, Feature feature,
+			MutableRepositoryList repositories,
 			List<FeatureDecorator> decorators) throws AbandonOperationException {
 
 		Feature updatedFeature = feature;
@@ -86,7 +85,7 @@ public class DecorationContext<T extends FeatureExtensionHandler> {
 		for (FeatureDecorator decorator : decorators) {
 			Feature loopFeature = updatedFeature;
 			FeatureDecoratorBuilderImpl decoratedFeatureBuilder = new FeatureDecoratorBuilderImpl(featureService, feature);
-			updatedFeature = decorator.decorate(feature, decoratedFeatureBuilder,
+			updatedFeature = decorator.decorate(feature, repositories, decoratedFeatureBuilder,
 					new DecoratorBuilderFactoryImpl(featureService));
 			enforceValidFeature(loopFeature, updatedFeature, decoratedFeatureBuilder.getBuilt());
 		}
@@ -95,6 +94,7 @@ public class DecorationContext<T extends FeatureExtensionHandler> {
 	}
 
 	public Feature executeFeatureExtensionHandlers(FeatureService featureService, final Feature feature,
+			MutableRepositoryList repositories,
 			Map<String, FeatureExtensionHandler> extensionHandlers) throws AbandonOperationException {
 		Map<String, FeatureExtensionHandler> toUse = new HashMap<String, FeatureExtensionHandler>(extensionHandlers);
 		
@@ -117,7 +117,7 @@ public class DecorationContext<T extends FeatureExtensionHandler> {
 
 			if (handlerForExtension != null) {
 				FeatureExtensionHandlerBuilderImpl decoratedFeatureBuilder = new FeatureExtensionHandlerBuilderImpl(featureService, feature);
-				updatedFeature = handlerForExtension.handle(feature, featureExtension,
+				updatedFeature = handlerForExtension.handle(feature, featureExtension, repositories,
 						decoratedFeatureBuilder, new DecoratorBuilderFactoryImpl(featureService));
 
 				enforceValidFeature(loopFeature, updatedFeature, decoratedFeatureBuilder.getBuilt());

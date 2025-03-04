@@ -13,7 +13,6 @@
  */
 package org.eclipse.osgi.technology.featurelauncher.launch.launcher;
 
-import static java.util.stream.Collectors.toList;
 import static org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.FrameworkLaunchingPropertiesFeatureExtensionHandlerImpl.getDefaultFrameworkProperties;
 
 import java.io.IOException;
@@ -32,6 +31,8 @@ import java.util.ServiceLoader;
 
 import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.DecorationContext;
 import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.LaunchFrameworkFeatureExtensionHandler;
+import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.MutableRepositoryList;
+import org.eclipse.osgi.technology.featurelauncher.launch.secondstage.SecondStageLauncherImpl;
 import org.osgi.framework.launch.Framework;
 import org.osgi.service.feature.Feature;
 import org.osgi.service.feature.FeatureService;
@@ -44,11 +45,6 @@ import org.osgi.service.featurelauncher.repository.ArtifactRepository;
 import org.osgi.service.featurelauncher.repository.ArtifactRepositoryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.eclipse.osgi.technology.featurelauncher.repository.spi.Repository;
-import org.eclipse.osgi.technology.featurelauncher.launch.secondstage.SecondStageLauncherImpl;
-import org.eclipse.osgi.technology.featurelauncher.repository.common.osgi.ArtifactRepositoryAdapter;
-import org.eclipse.osgi.technology.featurelauncher.repository.common.osgi.RepositoryAdapter;
 
 /**
  * 160.4 The Feature Launcher
@@ -260,23 +256,16 @@ public class FeatureLauncherImpl implements FeatureLauncher {
 				LOG.debug("Using extension handlers {}", extensionHandlers);
 			}
 
-			List<Repository> repositories = artifactRepositories.stream().map(ar -> {
-				if(ar instanceof ArtifactRepositoryAdapter) {
-					return ((ArtifactRepositoryAdapter) ar).unwrap();
-				} else {
-					return new RepositoryAdapter(ar);
-				}
-			}).collect(toList());
-			LaunchFrameworkFeatureExtensionHandler lffehi = new LaunchFrameworkFeatureExtensionHandler(
-					repositories);
-			DecorationContext<LaunchFrameworkFeatureExtensionHandler> context = new DecorationContext<>(lffehi, repositories);
+			MutableRepositoryList repositories = new MutableRepositoryList(artifactRepositories);
+			LaunchFrameworkFeatureExtensionHandler lffehi = new LaunchFrameworkFeatureExtensionHandler();
+			DecorationContext<LaunchFrameworkFeatureExtensionHandler> context = new DecorationContext<>(lffehi);
 			
 			Feature feature = originalFeature;
 			try {
 				//////////////////////////////////////
 				// 160.4.3.1: Feature Decoration
-				feature = context.executeFeatureDecorators(featureService, feature, decorators);
-				feature = context.executeFeatureExtensionHandlers(featureService, feature, extensionHandlers);
+				feature = context.executeFeatureDecorators(featureService, feature, repositories, decorators);
+				feature = context.executeFeatureExtensionHandlers(featureService, feature, repositories, extensionHandlers);
 			} catch (AbandonOperationException aoe) {
 				throw new LaunchException("Feature Decoration failed", aoe);
 			}

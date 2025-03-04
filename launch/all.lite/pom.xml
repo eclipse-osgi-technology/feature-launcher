@@ -60,6 +60,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.eclipse.osgi-technology.featurelauncher.repository</groupId>
+			<artifactId>common.osgi</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
@@ -71,12 +76,6 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>secondstage</artifactId>
-			<version>${project.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.osgi-technology.featurelauncher.repository</groupId>
-			<artifactId>common.osgi</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
@@ -136,6 +135,7 @@
 								<includes>
 									<include>org.eclipse.osgi-technology.featurelauncher.repository:lite</include>
 									<include>org.eclipse.osgi-technology.featurelauncher.repository:spi</include>
+									<include>org.eclipse.osgi-technology.featurelauncher.repository:common.osgi</include>
 									<include>org.eclipse.osgi-technology.featurelauncher:common</include>
 									<include>org.eclipse.osgi-technology.featurelauncher.launch:cli.pico</include>
 									<include>org.eclipse.osgi-technology.featurelauncher.launch:spi</include>
@@ -181,11 +181,6 @@
 						 			<groupId>${project.groupId}</groupId>
 						 			<artifactId>secondstage</artifactId>
 						 			<destFileName>secondstage.jar</destFileName>
-							 	</artifactItem>
-							 	<artifactItem>
-						 			<groupId>org.eclipse.osgi-technology.featurelauncher.repository</groupId>
-						 			<artifactId>common.osgi</artifactId>
-						 			<destFileName>repo-common-osgi.jar</destFileName>
 							 	</artifactItem>
 							 	<artifactItem>
 						 			<groupId>org.eclipse.osgi-technology.featurelauncher</groupId>

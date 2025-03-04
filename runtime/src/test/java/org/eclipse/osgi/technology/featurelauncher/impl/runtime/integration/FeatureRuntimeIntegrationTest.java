@@ -228,7 +228,8 @@ public class FeatureRuntimeIntegrationTest {
 		FeatureDecorator featureDummyDecorator = new FeatureDecorator() {
 
 			@Override
-			public Feature decorate(Feature feature, FeatureDecoratorBuilder decoratedFeatureBuilder,
+			public Feature decorate(Feature feature, List<ArtifactRepository> repositories, 
+					FeatureDecoratorBuilder decoratedFeatureBuilder,
 					DecoratorBuilderFactory factory) throws AbandonOperationException {
 
 				return decoratedFeatureBuilder.build();

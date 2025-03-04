@@ -35,4 +35,8 @@ public class ArtifactRepositoryAdapter implements ArtifactRepository {
 	public Repository unwrap() {
 		return repository;
 	}
+
+	public String toString() {
+		return "[ArtifactRepositoryAdapter: " + repository.toString() + " ]";
+	}
 }

@@ -50,12 +50,14 @@ import java.util.stream.Stream;
 
 import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.DecorationContext;
 import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.LaunchFrameworkFeatureExtensionHandler;
+import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.MutableRepositoryList;
 import org.osgi.service.feature.Feature;
 import org.osgi.service.feature.FeatureService;
 import org.osgi.service.featurelauncher.decorator.AbandonOperationException;
 import org.osgi.service.featurelauncher.decorator.FeatureDecorator;
 import org.osgi.service.featurelauncher.decorator.FeatureExtensionHandler;
-
+import org.osgi.service.featurelauncher.repository.ArtifactRepository;
+import org.eclipse.osgi.technology.featurelauncher.repository.common.osgi.ArtifactRepositoryAdapter;
 import org.eclipse.osgi.technology.featurelauncher.repository.spi.Repository;
 import org.eclipse.osgi.technology.featurelauncher.repository.spi.RepositoryFactory;
 import org.eclipse.osgi.technology.featurelauncher.launch.spi.SecondStageLauncher;
@@ -184,7 +186,7 @@ public class FeatureLauncherCli implements Runnable {
 		variables = (variables != null) ? variables : Collections.emptyMap();
 		configuration = (configuration != null) ? configuration : Collections.emptyMap();
 
-		List<Repository> repositories = getRepositories(repoFactory,
+		MutableRepositoryList repositories = getRepositories(repoFactory,
 				userSpecifiedArtifactRepositories, useDefaultRepos);
 
 		try {
@@ -204,7 +206,7 @@ public class FeatureLauncherCli implements Runnable {
 		System.out.println("------------------------------------------------------------------------");
 
 		System.out.println("Using artifact repositories: ");
-		for (Repository artifactRepository : repositories) {
+		for (ArtifactRepository artifactRepository : repositories) {
 			System.out.println(artifactRepository);
 		}
 		System.out.println("------------------------------------------------------------------------");
@@ -283,12 +285,14 @@ public class FeatureLauncherCli implements Runnable {
 			}
 		}
 
-		LaunchFrameworkFeatureExtensionHandler lffehi = new LaunchFrameworkFeatureExtensionHandler(repositories);
-		DecorationContext<LaunchFrameworkFeatureExtensionHandler> context = new DecorationContext<>(lffehi, repositories);
+		LaunchFrameworkFeatureExtensionHandler lffehi = new LaunchFrameworkFeatureExtensionHandler();
+		DecorationContext<LaunchFrameworkFeatureExtensionHandler> context = new DecorationContext<>(lffehi);
 		
 		try {
-			feature = context.executeFeatureDecorators(featureService, feature, decoratorInstances);
-			feature = context.executeFeatureExtensionHandlers(featureService, feature, featureExtensionHandlerInstances);
+			feature = context.executeFeatureDecorators(featureService, feature,
+					repositories, decoratorInstances);
+			feature = context.executeFeatureExtensionHandlers(featureService, feature,
+					repositories, featureExtensionHandlerInstances);
 		} catch (AbandonOperationException aoe) {
 			throw new FeatureLauncherCliException("Feature Decoration failed", aoe);
 		}
@@ -329,7 +333,7 @@ public class FeatureLauncherCli implements Runnable {
 		System.exit(exitCode);
 	}
 
-	private List<Repository> getRepositories(RepositoryFactory artifactRepositoryFactory,
+	private MutableRepositoryList getRepositories(RepositoryFactory artifactRepositoryFactory,
 			Map<URI, Map<String, Object>> userSpecifiedRemoteArtifactRepositories, boolean useDefaultRepos) {
 
 		List<Repository> artifactRepositories = new ArrayList<>();
@@ -372,7 +376,8 @@ public class FeatureLauncherCli implements Runnable {
 			}
 		}
 
-		return artifactRepositories;
+		return new MutableRepositoryList(artifactRepositories.stream()
+				.<ArtifactRepository>map(ArtifactRepositoryAdapter::new).toList());
 	}
 
 	static Path getDefaultM2RepositoryPath() throws IOException {

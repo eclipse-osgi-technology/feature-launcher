@@ -21,6 +21,7 @@ import org.osgi.service.feature.FeatureExtension.Type;
 import org.osgi.service.featurelauncher.decorator.AbandonOperationException;
 import org.osgi.service.featurelauncher.decorator.DecoratorBuilderFactory;
 import org.osgi.service.featurelauncher.decorator.FeatureDecorator;
+import org.osgi.service.featurelauncher.repository.ArtifactRepository;
 
 public class AddExtensionFeatureDecorator implements FeatureDecorator {
 
@@ -29,7 +30,8 @@ public class AddExtensionFeatureDecorator implements FeatureDecorator {
 	 * @see org.osgi.service.featurelauncher.decorator.FeatureDecorator#decorate(org.osgi.service.feature.Feature, org.osgi.service.featurelauncher.decorator.FeatureDecorator.FeatureDecoratorBuilder, org.osgi.service.featurelauncher.decorator.DecoratorBuilderFactory)
 	 */
 	@Override
-	public Feature decorate(Feature feature, FeatureDecoratorBuilder decoratedFeatureBuilder,
+	public Feature decorate(Feature feature, List<ArtifactRepository> repositories,
+			FeatureDecoratorBuilder decoratedFeatureBuilder,
 			DecoratorBuilderFactory factory) throws AbandonOperationException {
 		return decoratedFeatureBuilder
 				.setClassifier(feature.getID().getClassifier().orElse(null))
