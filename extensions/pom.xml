@@ -15,26 +15,21 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.eclipse.osgi-technology.featurelauncher</groupId>
-	<artifactId>reactor</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<parent>
+		<groupId>org.eclipse.osgi-technology.featurelauncher</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
+	</parent>
+	<groupId>org.eclipse.osgi-technology.featurelauncher.extensions</groupId>
+	<artifactId>extensions</artifactId>
 	<packaging>pom</packaging>
 
-	<name>Reactor for Feature Launcher Service Specification</name>
+	<name>Reactor for Feature Launcher Extensions</name>
 	<url>https://github.com/eclipse-osgi-technology/feature-launcher</url>
 
 	<modules>
-		<module>parent</module>
-		<module>repository</module>
-		<module>common</module>
-		<module>common.osgi</module>
-		<module>extensions</module>
-		<module>launch</module>
-		<module>runtime</module>
+		<module>hash.checker</module>
 	</modules>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.deploy.skip>true</maven.deploy.skip>
-	</properties>
 </project>
