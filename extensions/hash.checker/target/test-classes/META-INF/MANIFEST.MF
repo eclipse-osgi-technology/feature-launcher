@@ -1,0 +1,38 @@
+Manifest-Version: 1.0
+Bundle-Description: This pom is the base/parent-pom for all other mave
+ n-projects of     the eclipse.osgi-technology project
+Bundle-Developers: ideas-into-software;email="mhs@into.software";name=
+ "Michael H. Siemaszko",timothyjward;email="timothyjward@apache.org";n
+ ame="Tim Ward",StefanBischof;email="stbischof@bipolis.org";name="Stef
+ an Bischof"
+Bundle-DocURL: https://github.com/eclipse-osgi-technology/feature-laun
+ cher
+Bundle-License: "EPL-2.0";link="https://opensource.org/licenses/EPL-2.
+ 0";description="Eclipse Public License, Version 2.0"
+Bundle-ManifestVersion: 2
+Bundle-Name: OSGi Feature Launcher Maven Artifact Repository - no fram
+ ework dependencie
+Bundle-SCM: url="https://github.com/eclipse-osgi-technology/parent/ext
+ ensions/hash.checker",connection="scm:git:https://github.com/eclipse-
+ osgi-technology/parent/extensions/hash.checker",developer-connection=
+ "scm:git:git@github.com:eclipse-osgi-technology/parent/extensions/has
+ h.checker",tag=HEAD
+Bundle-SymbolicName: org.eclipse.osgi-technology.featurelauncher.exten
+ sions.hash.checker-tests
+Bundle-Vendor: Eclipse Foundation - Project osgi-technology
+Bundle-Version: 1.0.0.SNAPSHOT
+Fragment-Host: org.eclipse.osgi-technology.featurelauncher.extensions.
+ hash.checker
+Git-Descriptor: e34cd416c-dirty
+Git-SHA: e34cd416cab94aec4d1a0a00ace77b484502c169
+Import-Package: org.apache.felix.feature.impl,org.eclipse.osgi.technol
+ ogy.featurelauncher.common.decorator.impl,org.junit.jupiter.api;versi
+ on="[5.11,6)",org.junit.jupiter.api.function;version="[5.11,6)",org.j
+ unit.jupiter.params;version="[5.11,6)",org.junit.jupiter.params.provi
+ der;version="[5.11,6)",org.osgi.service.feature;version="[1.0,2)",org
+ .osgi.service.featurelauncher.decorator;version="[1.0,2)",org.osgi.se
+ rvice.featurelauncher.repository;version="[1.0,2)"
+Private-Package: artifacts,features,org.eclipse.osgi.technology.featur
+ elauncher.extensions.hash.checker
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=17))"
+
