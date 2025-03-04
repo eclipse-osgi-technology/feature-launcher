@@ -1,0 +1,30 @@
+{
+    "id": "org.eclipse.osgi.technology.featurelauncher.extensions.hash.checker.test:no-hashes:1.0",
+    "name": "No hashes",
+    "description": "No hashes Feature with empty extension config",
+    "complete": true,
+    "bundles": [
+        {
+            "id": "org.eclipse.osgi.technology.featurelauncher.extensions.hash.checker.test:a:0.0.1"
+        },
+        {
+            "id": "org.eclipse.osgi.technology.featurelauncher.extensions.hash.checker.test:e:0.0.1"
+        },
+        {
+            "id": "org.eclipse.osgi.technology.featurelauncher.extensions.hash.checker.test:i:0.0.1"
+        },
+        {
+            "id": "org.eclipse.osgi.technology.featurelauncher.extensions.hash.checker.test:o:0.0.1"
+        },
+        {
+            "id": "org.eclipse.osgi.technology.featurelauncher.extensions.hash.checker.test:u:0.0.1"
+        }
+    ],
+    "extensions": {
+        "eclipse.osgi.technology.hash.checker": {
+            "kind": "mandatory",
+            "type": "text",
+            "text": ["Foobar"]
+        }
+    }
+}
