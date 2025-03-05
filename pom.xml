@@ -28,6 +28,7 @@
 		<module>repository</module>
 		<module>common</module>
 		<module>common.osgi</module>
+		<module>extensions</module>
 		<module>launch</module>
 		<module>runtime</module>
 	</modules>
