@@ -35,8 +35,8 @@ import org.osgi.service.featurelauncher.decorator.AbandonOperationException;
 import org.osgi.service.featurelauncher.decorator.FeatureExtensionHandler;
 import org.osgi.service.featurelauncher.repository.ArtifactRepository;
 
-import com.kentyou.prototype.featurelauncher.common.decorator.impl.DecoratorBuilderFactoryImpl;
-import com.kentyou.prototype.featurelauncher.common.decorator.impl.FeatureExtensionHandlerBuilderImpl;
+import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.DecoratorBuilderFactoryImpl;
+import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.FeatureExtensionHandlerBuilderImpl;
 
 class BundleHashCheckerTests {
 

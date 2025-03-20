@@ -65,7 +65,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.kentyou.prototype.featurelauncher</groupId>
+			<groupId>org.eclipse.osgi-technology.featurelauncher</groupId>
 			<artifactId>common</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
