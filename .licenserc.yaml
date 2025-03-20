@@ -51,5 +51,6 @@ header:
     - '**/bin/pom.xml'
     - '**/resources/META-INF/services/**'
     - '**/bnd.bnd'
+    - 'extensions/hash.checker/src/test/resources/**'
 
   comment: always
