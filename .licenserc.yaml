@@ -53,5 +53,6 @@ header:
     - '**/bnd.bnd'
     - 'extensions/hash.checker/src/test/resources/**'
     - 'featureservice/base/src/main/java/org/eclipse/osgi/technology/featurelauncher/featureservice/base/external/CommentRemovingReader.java'
+    - 'extensions/manifest.replacer/src/test/resources/bundles/*/META-INF/MANIFEST.MF'
 
   comment: always

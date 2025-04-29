@@ -1,0 +1,21 @@
+{
+    "id": "org.eclipse.osgi.technology.featurelauncher.extensions.manifest.replacer.test:not-json:1.0",
+    "name": "No hashes",
+    "description": "No manifests Feature with invalid extension config",
+    "complete": true,
+    "bundles": [
+        {
+            "id": "org.eclipse.osgi.technology.featurelauncher.extensions.manifest.replacer.test:test-bundle:0.0.1"
+        },
+        {
+            "id": "org.eclipse.osgi.technology.featurelauncher.extensions.manifest.replacer.test:test-bundle2:0.0.1"
+        }
+    ],
+    "extensions": {
+        "eclipse.osgi.technology.manifest.replacer": {
+            "kind": "mandatory",
+            "type": "text",
+            "text": ["Foobar"]
+        }
+    }
+}
