@@ -1,0 +1,24 @@
+{
+    "id": "org.eclipse.osgi.technology.featurelauncher.extensions.manifest.replacer.test:with-manifests:1.0",
+    "name": "With manifests",
+    "description": "With Manifests Feature with empty extension config",
+    "complete": true,
+    "bundles": [
+        {
+            "id": "org.eclipse.osgi.technology.featurelauncher.extensions.manifest.replacer.test:test-bundle:0.0.1",
+            "eclipse.osgi.technology.manifest.replacer.Bundle-ManifestVersion": "2",
+            "eclipse.osgi.technology.manifest.replacer.Bundle-SymbolicName": "test-update",
+            "eclipse.osgi.technology.manifest.replacer.Bundle-Version": "2.3.4"
+        },
+        {
+            "id": "org.eclipse.osgi.technology.featurelauncher.extensions.manifest.replacer.test:test-bundle2:0.0.1"
+        }
+    ],
+    "extensions": {
+        "eclipse.osgi.technology.manifest.replacer": {
+            "kind": "mandatory",
+            "type": "json",
+            "json": {}
+        }
+    }
+}
