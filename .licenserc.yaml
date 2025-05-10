@@ -52,5 +52,6 @@ header:
     - '**/resources/META-INF/services/**'
     - '**/bnd.bnd'
     - 'extensions/hash.checker/src/test/resources/**'
+    - 'featureservice/base/src/main/java/org/eclipse/osgi/technology/featurelauncher/featureservice/base/external/CommentRemovingReader.java'
 
   comment: always

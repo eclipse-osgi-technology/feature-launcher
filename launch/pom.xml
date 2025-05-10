@@ -32,6 +32,7 @@
 		<module>spi</module>
 		<module>tests</module>
 		<module>cli.pico</module>
+		<module>cli.plain</module>
 		<module>launcher</module>
 		<module>secondstage</module>
 		<module>all.lite</module>

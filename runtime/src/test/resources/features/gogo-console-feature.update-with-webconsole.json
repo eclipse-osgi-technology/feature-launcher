@@ -63,7 +63,7 @@
 		"org.apache.felix.webconsole.internal.servlet.OsgiManager": {
 			"username": "fcAdmin",
 			"password": "fcAdmin",
-			"http.service.filter": "id=httpFeatureLauncherTest"
+			"http.service.filter": "(id=httpFeatureLauncherTest)"
 		}
 	}
 }
