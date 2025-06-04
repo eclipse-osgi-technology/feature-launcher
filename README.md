@@ -13,15 +13,15 @@ The main parts of the OSGi Feature Launcher are:
     - A means of accessing the installable bytes for bundles in a Feature
     - Out of the box there are two repositories
         - MavenArtifactRepository
-            - _org.eclipse.osgi-technology.featurelauncher.repository:artifact.maven_
+            - `org.eclipse.osgi-technology.featurelauncher.repository:artifact.maven`
         - LiteRepository (local repository in Maven format)
-            - _org.eclipse.osgi-technology.featurelauncher.repository:artifact.lite_
+            - `org.eclipse.osgi-technology.featurelauncher.repository:artifact.lite`
 - Feature Launcher
   - A Feature Launcher obtains an OSGi Framework instance and installs a Feature into it. 
-  - _org.eclipse.osgi-technology.featurelauncher.launch:launcher_
+    - `org.eclipse.osgi-technology.featurelauncher.launch:launcher`
 - Feature Runtime
   - A Feature Runtime is an OSGi service capable of installing Features into the running OSGi framework, removing installed Features from the OSGi framework, and updating an installed Feature with a new Feature definition.
-  - _org.eclipse.osgi-technology.featurelauncher:runtime_
+    - `org.eclipse.osgi-technology.featurelauncher:runtime`
 
 ### OSGi API dependencies
 
