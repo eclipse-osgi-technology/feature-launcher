@@ -1,0 +1,17 @@
+{
+	"id": "com.kentyou.ocx2024.featurelauncher.demo-1:gogo-feature:1.0",
+	"name": "Gogo console feature",
+	"description": "Gogo console feature",
+	"complete": true,
+	"bundles": [
+		{
+			"id": "org.apache.felix:org.apache.felix.gogo.command:1.1.2"
+		},
+		{
+			"id": "org.apache.felix:org.apache.felix.gogo.shell:1.1.4"
+		},
+		{
+			"id": "org.apache.felix:org.apache.felix.gogo.runtime:1.1.6"
+		}
+	]
+}

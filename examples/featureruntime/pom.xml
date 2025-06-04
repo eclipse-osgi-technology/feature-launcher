@@ -1,0 +1,27 @@
+<!--
+  Copyright (c) 2024 Kentyou.
+
+  This program and the accompanying materials are made
+  available under the terms of the Eclipse Public License 2.0
+  which is available at https://www.eclipse.org/legal/epl-2.0/
+
+  SPDX-License-Identifier: EPL-2.0
+
+  Contributors:
+      Tim Ward (Kentyou) - Initial implementation
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>examples.featurelauncher</groupId>
+  <artifactId>reactor</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Examples: Demo 2</name>
+  <modules>
+    <module>parent</module>
+    <module>demo-2</module>
+    <module>demo2-a</module>
+    <module>demo2-b</module>
+    <module>demo2-command</module>
+  </modules>
+</project>
