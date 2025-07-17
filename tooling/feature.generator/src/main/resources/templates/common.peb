@@ -1,0 +1,134 @@
+{%- import 'common.peb' as common -%}
+{% macro printComponents (components, metatypes) -%}
+
+{%- for c in components -%}
+{%- if not (loop.first) %}
+
+{% endif -%}
+{{ printComponentJsonConfiguratorSnippet(c, metatypes) }}
+{%- endfor -%}
+{%- endmacro %}
+
+{% macro printComponentJsonConfiguratorSnippet (c, metatypes) -%}
+
+{% for pid in c.configurationPid %}
+  /*
+   * Component: {{ c.name }}
+
+   * policy:    {{ c.configurationPolicy }}
+   */
+
+{% set pidOcd = "notset" -%}
+{%- set factoryPidOcd = "notset" -%}
+{%- for ocd in metatypes -%}
+{%- if ocd.pids contains pid -%}
+{%- set pidOcd = ocd -%}
+{%- elseif ocd.factoryPids contains pid -%}
+{%- set factoryPidOcd = ocd -%}
+{%- endif -%}
+{%- endfor -%}
+{%- set o = "notset" -%}
+{%- if pidOcd != 'notset' %}
+
+  // "{{ pid }}":{
+{%- set o = pidOcd -%}
+{%- elseif factoryPidOcd != 'notset' %}
+  // "{{ pid }}~FactoryNameChangeIt":{
+{% set o = factoryPidOcd -%}
+{%- else %}
+  // "{{ pid }}":{
+
+{%- endif %}
+
+      //# Component properties
+{% if c.properties is empty %}
+        // none
+{% else %}
+{%- for entry in c.properties %}
+
+        /*
+         * Type = {{ common.printPropertyType(entry.value.type,entry.value.multiValue) }}
+         
+{% if entry.value.values is not empty %}
+         * Default = {{ common.printPropertyValues(entry.value.type,entry.value.values,entry.value.multiValue) }}
+         
+{% endif %}
+         */
+         // "{{ entry.key }}": null,{% if loop.last %}
+
+{% else%}{% endif %}
+
+{% endfor %}
+{% endif %}
+
+      //# Reference bindings
+{%- if c.references is empty %}
+
+        // none
+{%- else -%}
+{%- for r in c.references %}
+
+        // "{{r.name}}.target": {% if r.target=='' %}"(component.pid=*)"{% else %}"{{r.target}}"{% endif -%}
+{%- if loop.last -%}{%- if loop.parent.o == 'notset' %}{% else %},{% endif %}{{ '\n' }}{% else %},{%- endif -%}
+{%- endfor %}
+{%- endif %}
+
+
+      //# ObjectClassDefinition - Attributes
+{% if o == 'notset' %}
+        // (No PidOcd available.)
+{% else %}
+{%- for a in o.attributes %}
+
+
+        /*
+         * Required = {{a.required}}
+
+         * Type = {{ common.printPropertyType(a.type,(a.cardinality != 0)) }}
+         
+{% if a.description is not empty %}
+         * Description = {{ a.description }}
+         
+{% endif %}
+{% if a.values is not empty %}
+         * Default = {{ common.printPropertyValues(a.type,a.values,(a.cardinality != 0)) }}
+         
+{% endif %}
+{% if ( a.max is not empty ) or ( a.min is not empty ) %}
+         * Value restriction = `min = {{a.min}}` / `max = {{a.max}}`
+         
+{% elseif a.options is not empty %}
+         * Value restriction = {{ common.printOptions(a.options) }}
+         
+{% endif %}
+         */
+         {% if a.required!='true' %}// {% endif -%}"{{ a.id }}": null{% if loop.last %}{% else%},{% endif %}
+{% endfor %}
+{%- endif %}
+  // },
+
+{%- endfor %}
+{% if not loop.last %}
+
+
+// ------------------------------------------------
+{% endif %}
+{%- endmacro %}
+
+{% macro printPropertyType (type, multiValue) -%}
+{{ type }}{{ (multiValue) ? '[]' : ''}}
+{%- endmacro %}
+
+
+{% macro printPropertyValues (type, values, multiValue) -%}
+{%- if multiValue -%}
+{{ '[' }}{% for v in values %}{{ (loop.first) ? '' : ', ' }}{{ (type == 'String' ) ? '"'~v~'"' : v}}{% endfor %}{{ ']' }}
+{%- else -%}
+{{ (type == 'String' ) ? '"'~(values[0])~'"' : values[0] }}
+{%- endif -%}
+{%- endmacro %}
+
+
+{% macro printOptions (option) -%}
+{% for o in option %}{{ (loop.first) ? '' : ', ' }}{{ '"'~o.value~'"' }}{% endfor %}
+{%- endmacro %}

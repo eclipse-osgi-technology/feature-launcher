@@ -1,0 +1,9 @@
+<component-set>
+  <components>
+    <component>
+      <role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+      <hint>osgi-feature</hint>
+      <implementation>com.example.maven.osgi.OsgiFeatureLifecycleMapping</implementation>
+    </component>
+  </components>
+</component-set>

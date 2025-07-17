@@ -32,6 +32,7 @@
 		<module>launch</module>
 		<module>runtime</module>
 		<module>featureservice</module>
+		<module>tooling</module>
 	</modules>
 
 	<properties>

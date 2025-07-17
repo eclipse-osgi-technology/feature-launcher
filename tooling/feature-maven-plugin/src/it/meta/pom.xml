@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>
+    org.eclipse.osgi-technology.featurelauncher-feature-maven-plugin-examples</groupId>
+  <artifactId>meta</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>TheName</name>
+  <description>TheDescription</description>
+  <scm>
+    <url>theScmUrl</url>
+  </scm>
+  <organization>
+    <name>TheOrganisation</name>
+  </organization>
+  <issueManagement>
+    <url>TheIssueManagement</url>
+  </issueManagement>
+  <licenses>
+    <license>
+      <name>TheLicense1</name>
+    </license>
+    <license>
+      <name>TheLicense2</name>
+    </license>
+  </licenses>
+
+
+  <properties>
+    <osgi.feature.category>Foo</osgi.feature.category>
+    <osgi.feature.category.1>bar</osgi.feature.category.1>
+    <osgi.feature.category.2>buzz</osgi.feature.category.2>
+
+  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.osgi-technology.featurelauncher</groupId>
+        <artifactId>feature-maven-plugin</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>generate-osgi-feature</id>
+            <phase>package</phase>
+            <goals>
+              <goal>create-feature</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

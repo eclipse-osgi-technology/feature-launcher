@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>
+    org.eclipse.osgi-technology.featurelauncher-feature-maven-plugin-examples</groupId>
+  <artifactId>dependency</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.namespace.service</artifactId>
+      <version>1.0.0</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.osgi-technology.featurelauncher</groupId>
+        <artifactId>feature-maven-plugin</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <!--        <extensions>true</extensions>-->
+        <executions>
+          <execution>
+            <id>generate-osgi-feature</id>
+            <phase>package</phase>
+            <goals>
+              <goal>create-feature</goal>
+            </goals>
+            <configuration>
+              <feature.outputFileName>my-feature.json</feature.outputFileName>
+              <include>
+                <maven>
+                  <mavenDependencies>true</mavenDependencies>
+                </maven>
+              </include>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

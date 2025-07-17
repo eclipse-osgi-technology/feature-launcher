@@ -1,0 +1,60 @@
+{% import 'json.peb' as json %}
+{% import 'common.peb' as common %}
+{
+  "feature-resource-version": "1.0",
+  "id": "{{ meta.id }}"{% if meta.name.isPresent %},
+  "name": "{{ meta.name.get }}" {% endif %}{% if meta.description.isPresent %},
+  "description": "{{ meta.description.get }}" {% endif %}{% if meta.docURL.isPresent %},
+  "docURL": "{{ meta.docURL.get }}" {% endif %}{% if meta.license.isPresent %},
+  "license": "{{ meta.license.get }}" {% endif %}{% if meta.scm.isPresent %},
+  "scm": "{{ meta.scm.get }}" {% endif %}{% if meta.vendor.isPresent %},
+  "vendor": "{{ meta.vendor.get }}" {% endif %}{% if not meta.categories.isEmpty %},
+  "categories": {{ json.jsonStringArray( 4,  meta.categories ) }} {% endif %},
+  "complete": {{ meta.complete }}
+
+{% if variables is not empty %}
+  "variables": {
+{% for entry in variables %}
+    "{{ entry.key }}": {{ json.jsonValue(entry.value) }}{% if not loop.last %},{% endif %}
+
+{% endfor %}
+  }{% endif %}
+
+
+{% if ids is not empty %}
+  "bundles": [
+{% for id in ids %}
+  {
+  "id":  "{{ id }}",
+  "checksum.md5": "{{ checksumMap[id].md5 }}",
+  "checksum.sha1": "{{ checksumMap[id].sha1 }}",
+  "checksum.sha256": "{{ checksumMap[id].sha256 }}",
+  "checksum.sha512": "{{ checksumMap[id].sha512 }}"
+  }{% if not loop.last %},{% endif %}
+
+{% endfor %}
+{% endif %}
+
+],
+
+  "configuration": {
+  
+{%- if setting.config.byFeature %}
+{%- if ids is not empty -%}
+{% for id in ids -%}
+
+  {{ common.printComponents(componentsMap[id], ocdsMap[id] ) }}
+
+{% endfor %}
+{%- endif -%}
+{%- endif %}
+  },
+
+  "extensions": {
+  
+  }
+
+}
+
+
+

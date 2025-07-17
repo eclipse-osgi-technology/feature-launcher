@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>
+    org.eclipse.osgi-technology.featurelauncher-feature-maven-plugin-examples</groupId>
+  <artifactId>var</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <properties>
+    <osgi.feature.var.NonTypeInt>1</osgi.feature.var.NonTypeInt>
+    <osgi.feature.var.String_StringTypeInt>1</osgi.feature.var.String_StringTypeInt>
+    <osgi.feature.var.Integer_IntegerTypeInt>1</osgi.feature.var.Integer_IntegerTypeInt>
+    <osgi.feature.var.Double_DoubleTypeInt>1</osgi.feature.var.Double_DoubleTypeInt>
+    <osgi.feature.var.Boolean_BooleanTypeInt>1</osgi.feature.var.Boolean_BooleanTypeInt>
+
+    <osgi.feature.var.NonTypeDouble>1.111</osgi.feature.var.NonTypeDouble>
+    <osgi.feature.var.String_StringTypeDouble>1.111</osgi.feature.var.String_StringTypeDouble>
+    <osgi.feature.var.Double_DoubleTypeDouble>1.111</osgi.feature.var.Double_DoubleTypeDouble>
+
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.osgi-technology.featurelauncher</groupId>
+        <artifactId>feature-maven-plugin</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>generate-osgi-feature</id>
+            <phase>package</phase>
+            <goals>
+              <goal>create-feature</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

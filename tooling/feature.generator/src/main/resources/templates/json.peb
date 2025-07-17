@@ -1,0 +1,11 @@
+{% macro jsonValue(value) %}
+{% if isString(value) %}"{{ value }}"{% else %}{{ value }}{% endif %}
+{% endmacro %}
+
+{% macro jsonStringArray(i ,list) %}
+[
+{% for item in list %}
+{{ indent(i) }}"{{ item }}"{% if not loop.last %},{% endif %}
+
+{% endfor %}
+{{ indent(i) }}]{% endmacro %}
