@@ -38,22 +38,10 @@
 			<artifactId>org.osgi.service.featurelauncher</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.cm.json</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.feature</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish</groupId>
-			<artifactId>jakarta.json</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>cli.pico</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cli.plain</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 		<dependency>
 			<groupId>org.eclipse.osgi-technology.featurelauncher.repository</groupId>
 			<artifactId>lite</artifactId>
@@ -69,11 +57,6 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>info.picocli</groupId>
-			<artifactId>picocli</artifactId>
-		</dependency>
-		<!-- These are nested for second stage launch-->
-		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>secondstage</artifactId>
 			<version>${project.version}</version>
@@ -85,6 +68,17 @@
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
+
+    <dependency>
+      <groupId>org.eclipse.osgi-technology.featurelauncher.featureservice</groupId>
+      <artifactId>featureservice</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.grack</groupId>
+      <artifactId>nanojson</artifactId>
+      <version>1.10</version>
+    </dependency>
 
 		<!-- default OSGi framework -->
 <!--		<dependency>
@@ -137,22 +131,28 @@
 									<include>org.eclipse.osgi-technology.featurelauncher.repository:spi</include>
 									<include>org.eclipse.osgi-technology.featurelauncher.repository:common.osgi</include>
 									<include>org.eclipse.osgi-technology.featurelauncher:common</include>
-									<include>org.eclipse.osgi-technology.featurelauncher.launch:cli.pico</include>
+                  <include>org.eclipse.osgi-technology.featurelauncher.launch:cli.plain</include>
 									<include>org.eclipse.osgi-technology.featurelauncher.launch:spi</include>
-									<include>info.picocli:picocli</include>
-									<include>org.apache.felix:org.apache.felix.cm.json</include>
-									<include>org.apache.felix:org.apache.felix.feature</include>
-									<include>org.glassfish:jakarta.json</include>
+                  <include>org.eclipse.osgi-technology.featurelauncher.featureservice:base</include>
+                  <include>com.grack:nanojson</include>
 									<include>org.osgi:org.osgi.service.feature</include>
 									<include>org.osgi:org.osgi.service.featurelauncher</include>
 									<include>org.slf4j:slf4j-api</include>
 								</includes>
 							</artifactSet>
+							<filters>
+                <filter>
+                  <artifact>org.osgi:*</artifact>
+                    <excludes>
+                      <exclude>OSGI-OPT/**</exclude>
+                    </excludes>
+                  </filter>
+                </filters>
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<mainClass>
-										org.eclipse.osgi.technology.featurelauncher.launch.cli.pico.FeatureLauncherCli</mainClass>
+										org.eclipse.osgi.technology.featurelauncher.launch.cli.plain.FeatureLauncherCli</mainClass>
 								</transformer>
 							</transformers>
 						</configuration>

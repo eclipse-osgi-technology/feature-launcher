@@ -128,7 +128,7 @@ abstract class AbstractMavenRepositoryImpl implements FileSystemRepository {
 			}
 
 		} catch (ArtifactResolutionException e) {
-			LOG.error(String.format("Error getting artifact ID '%s'", id.toString()), e);
+			LOG.warn(String.format("Unable to get artifact ID '%s'", id.toString()));
 		}
 
 		return null;

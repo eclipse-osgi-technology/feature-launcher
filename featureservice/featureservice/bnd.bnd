@@ -1,0 +1,22 @@
+#-includeresource: @nanojson-1.10.jar
+
+-privatepackage: \
+  org.eclipse.osgi.technology.featurelauncher.featureservice.base.external,\
+  org.eclipse.osgi.technology.featurelauncher.featureservice.base
+
+-noextraheaders: 
+-removeheaders: \
+  Tool, \
+  Bnd-LastModified, \
+  Bnd-ManifestVersion, \
+  Build-Jdk, \
+  Build-Jdk-Spec, \
+  Built-By, \
+  Created-By, \
+  Private-Package, \
+  Bundle-DocURL, \
+  Bundle-Name, \
+  Bundle-Vendor,\
+  Bundle-Description,\
+  Bundle-SCM,\
+  Bundle-Developers

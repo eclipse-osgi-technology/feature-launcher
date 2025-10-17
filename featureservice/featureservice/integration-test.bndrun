@@ -1,0 +1,42 @@
+-tester: biz.aQute.tester.junit-platform
+-runfw: org.apache.felix.framework
+-runee: JavaSE-17
+-resolve.effective: active
+
+-runrequires: \
+	bnd.identity;id='${project.groupId}.${project.artifactId}-tests',\
+	bnd.identity;id='org.osgi.test.cases.feature',\
+	bnd.identity;id=junit-platform-commons,\
+	bnd.identity;id=junit-jupiter-params
+
+-resolve: auto
+# This will help us keep -runbundles sorted
+-runstartlevel: \
+    order=sortbynameversion,\
+    begin=-1
+    
+-runbundles: \
+	assertj-core;version='[3.26.0,3.26.1)',\
+	com.grack.nanojson;version='[1.10.0,1.10.1)',\
+	junit-jupiter-api;version='[5.11.1,5.11.2)',\
+	junit-jupiter-engine;version='[5.11.1,5.11.2)',\
+	junit-jupiter-params;version='[5.11.1,5.11.2)',\
+	junit-platform-commons;version='[1.11.1,1.11.2)',\
+	junit-platform-engine;version='[1.11.1,1.11.2)',\
+	junit-platform-launcher;version='[1.11.1,1.11.2)',\
+	net.bytebuddy.byte-buddy;version='[1.14.16,1.14.17)',\
+	net.bytebuddy.byte-buddy-agent;version='[1.15.3,1.15.4)',\
+	org.apache.aries.spifly.dynamic.framework.extension;version='[1.3.7,1.3.8)',\
+	org.apache.geronimo.specs.geronimo-json_1.1_spec;version='[1.5.0,1.5.1)',\
+	org.apache.johnzon.core;version='[1.2.21,1.2.22)',\
+	org.apache.servicemix.bundles.junit;version='[4.13.2,4.13.3)',\
+	org.eclipse.osgi-technology.featurelauncher.featureservice.featureservice;version='[1.0.0,1.0.1)',\
+	org.eclipse.osgi-technology.featurelauncher.featureservice.featureservice-tests;version='[1.0.0,1.0.1)',\
+	org.json;version='[1.0.0,1.0.1)',\
+	org.mockito.mockito-core;version='[4.11.0,4.11.1)',\
+	org.objenesis;version='[3.3.0,3.3.1)',\
+	org.opentest4j;version='[1.3.0,1.3.1)',\
+	org.osgi.service.feature;version='[1.0.0,1.0.1)',\
+	org.osgi.test.cases.feature;version='[8.1.0,8.1.1)',\
+	org.osgi.test.common;version='[1.3.0,1.3.1)',\
+	org.osgi.test.junit5;version='[1.3.0,1.3.1)'

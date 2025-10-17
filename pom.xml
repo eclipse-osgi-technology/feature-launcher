@@ -31,6 +31,9 @@
 		<module>extensions</module>
 		<module>launch</module>
 		<module>runtime</module>
+		<module>featureservice</module>
+		<module>examples/featureruntime</module>
+		<module>examples/featurelauncher</module>
 	</modules>
 
 	<properties>

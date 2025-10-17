@@ -1,0 +1,22 @@
+{
+	"id": "org.eclipse.osgi.technology.featurelauncher:h2-feature:1.0",
+	"name": "h2 feature",
+	"description": "h2 feature",
+	"complete": true,
+	"bundles": [
+		{
+			"id": "com.h2database:h2:2.3.232"
+		}
+	],
+	"extensions": {
+		"launch-framework": {
+			"kind": "mandatory",
+			"type": "artifacts",
+			"artifacts": [
+				{
+					"id": "org.apache.felix:org.apache.felix.framework:7.0.5"
+				}
+			]
+		}
+	}
+}

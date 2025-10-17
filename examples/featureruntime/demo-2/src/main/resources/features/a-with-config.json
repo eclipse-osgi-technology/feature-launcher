@@ -1,0 +1,16 @@
+{
+  "id": "examples.featurelauncher.demo-2:a-feature:1.0",
+  "name": "Demo 2 feature a",
+  "description": "A demo feature including a simple greeting component",
+  "complete": true,
+  "bundles": [
+    {
+      "id": "examples.featurelauncher:demo2-a:0.0.1-SNAPSHOT"
+    }
+  ],
+  "configurations": {
+    "demo.config.a": {
+      "name": "OCX 2024"
+    }
+  }
+}
