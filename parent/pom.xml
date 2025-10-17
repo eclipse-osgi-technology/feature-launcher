@@ -28,6 +28,7 @@
 
 	<!-- can be removed when parent is deployed ad non snapshot.-->
 	<repositories>
+
 		<repository>
 			<id>ossrh</id>
 			<name>Sonatype Nexus Snapshots</name>
@@ -39,6 +40,18 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>central-snapshots</id>
+			<name>Central Snapshot</name>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
 		<repository>
 			<id>apache-snapshots</id>
 			<name>Apache Snapshots</name>
@@ -54,7 +67,18 @@
 
 	<name>Implementation of OSGi "160. Feature Launcher Service Specification"</name>
 	<url>https://github.com/eclipse-osgi-technology/feature-launcher</url>
-
+	<organization>
+		<name>Eclipse Foundation - Project osgi-technology</name>
+		<url>https://www.eclipse.org/</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>EPL-2.0</name>
+			<comments>Eclipse Public License, Version 2.0</comments>
+			<url>https://opensource.org/licenses/EPL-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 	<developers>
 		<developer>
 			<id>ideas-into-software</id>
@@ -72,11 +96,30 @@
 			<email>stbischof@bipolis.org</email>
 		</developer>
 	</developers>
+	<scm>
+		<url>https://github.com/eclipse-osgi-technology/feature-launcher</url>
+		<connection>scm:git:https://github.com/eclipse-osgi-technology/feature-launcher</connection>
+		<developerConnection>scm:git:git@github.com:eclipse-osgi-technology/feature-launcher</developerConnection>
+	</scm>
 
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/eclipse-osgi-technology/feature-launcher/issues</url>
+	</issueManagement>
 
-
+	<distributionManagement>
+		<snapshotRepository>
+			<id>central</id>
+			<url>https://central.sonatype.com/repository/maven-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+	
 	<properties>
-		<maven.compiler.release>17</maven.compiler.release>
+	    <java.version>17</java.version>
+	    <java.release>17</java.release>
+
+	    <maven.compiler.source>${java.version}</maven.compiler.source>
+	    <maven.compiler.target>${java.version}</maven.compiler.target>
 
 		<!-- Forbid the OSGi framework API - required for most projects -->
 		<osgi.dependency.allowed>false</osgi.dependency.allowed>
@@ -109,6 +152,7 @@
 		<osgi.test.version>1.3.0</osgi.test.version>
 		<junit-jupiter.version>5.11.1</junit-jupiter.version>
 		<junit-platform.version>1.11.1</junit-platform.version>
+		<assertj.version>3.27.6</assertj.version>
 		<mockito.version>5.14.1</mockito.version>
 		<aries.spifly.dynamic.framework.extension.version>1.3.7</aries.spifly.dynamic.framework.extension.version>
 		<glassfish.jakarta.json.version>2.0.1</glassfish.jakarta.json.version>
@@ -117,7 +161,7 @@
 		<!-- plugin dependencies' versions -->
 		<maven.dependency.plugin.version>3.8.0</maven.dependency.plugin.version>
 		<maven.properties.plugin.version>1.2.1</maven.properties.plugin.version>
-		<maven.clean.plugin.version>3.4.0</maven.clean.plugin.version>
+		<maven.clean.plugin.version>3.5.0</maven.clean.plugin.version>
 		<maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
 		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
 		<maven.surefire.plugin.version>3.3.0</maven.surefire.plugin.version>
@@ -135,6 +179,14 @@
 		<!-- path to local M2 repository, also passed to integration tests via
 		System properties -->
 		<localRepositoryPath>${project.build.directory}/m2Repo</localRepositoryPath>
+		
+		<project.build.outputTimestamp>1980-02-01T00:00:00Z</project.build.outputTimestamp>
+  		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- dash-->
+		<dash.projectId>technology.osgi-technology</dash.projectId>
+		<dash.repo>https://github.com/eclipse-osgi-technology/</dash.repo>
+    
 	</properties>
 
 	<dependencyManagement>
@@ -330,6 +382,18 @@
 				<scope>test</scope>
 			</dependency>
 			<dependency>
+				<groupId>org.assertj</groupId>
+				<artifactId>assertj-core</artifactId>
+				<version>${assertj.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>${mockito.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-junit-jupiter</artifactId>
 				<version>${mockito.version}</version>
@@ -440,6 +504,11 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>properties-maven-plugin</artifactId>
 					<version>${maven.properties.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>${maven.clean.plugin.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
