@@ -19,7 +19,6 @@ import java.io.FileReader;
 import java.io.StringWriter;
 import java.nio.file.Path;
 
-import org.eclipse.osgi.technology.featurelauncher.featureservice.base.FeatureServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.osgi.service.feature.Feature;
 

@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ServiceLoader;
 
-import org.eclipse.osgi.technology.featurelauncher.repository.artifact.lite.LiteArtifactRepositoryFactory;
 import org.junit.jupiter.api.Test;
 import org.osgi.service.featurelauncher.repository.ArtifactRepositoryFactory;
 

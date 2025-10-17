@@ -13,7 +13,6 @@
  */
 package org.eclipse.osgi.technology.featurelauncher.repository.maven;
 
-import org.eclipse.osgi.technology.featurelauncher.repository.maven.LocalArtifactRepositoryImpl;
 import org.eclipse.osgi.technology.featurelauncher.repository.spi.Repository;
 import org.eclipse.osgi.technology.featurelauncher.repository.tests.LocalRepositoryTest;
 
