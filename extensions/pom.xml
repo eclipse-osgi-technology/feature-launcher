@@ -30,6 +30,7 @@
 
 	<modules>
 		<module>hash.checker</module>
+		<module>manifest.replacer</module>
 	</modules>
 
 </project>
