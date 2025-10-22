@@ -177,7 +177,7 @@
 		<!-- dash-->
 		<dash.projectId>technology.osgi-technology</dash.projectId>
 		<dash.repo>https://github.com/eclipse-osgi-technology/</dash.repo>
-    
+		<maven.deploy.skip>true</maven.deploy.skip>
 	</properties>
 
 	<dependencyManagement>
