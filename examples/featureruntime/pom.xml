@@ -17,6 +17,9 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Examples: Demo 2</name>
+  <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
+  </properties>
   <modules>
     <module>parent</module>
     <module>demo-2</module>
