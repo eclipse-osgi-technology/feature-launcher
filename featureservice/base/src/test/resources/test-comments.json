@@ -1,0 +1,7 @@
+// This is a line comment
+{
+  "feature-resource-version": "1.0",
+  /* This is a block comment */
+  "id": "org.acme:commented:1.0.0",
+  "name": "Commented Feature" // trailing comment
+}

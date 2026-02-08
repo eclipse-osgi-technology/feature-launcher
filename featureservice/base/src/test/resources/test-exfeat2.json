@@ -1,0 +1,13 @@
+{
+  "feature-resource-version": "1.0",
+  "id": "org.acme:textonly:1.0.0",
+
+  "extensions": {
+    "simple-text": {
+      "type": "text",
+      "text": [
+        "Single line text."
+      ]
+    }
+  }
+}
