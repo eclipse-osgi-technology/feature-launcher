@@ -1,0 +1,34 @@
+{
+  "feature-resource-version": "1.0",
+  "id": "org.acme:fullapp:jar:classifier:1.0.0",
+  "name": "Full Application",
+  "description": "A complete application with all metadata",
+  "docURL": "https://docs.example.com/fullapp",
+  "license": "https://opensource.org/licenses/MIT",
+  "scm": "https://github.com/acme/fullapp",
+  "vendor": "Acme Corp.",
+  "complete": true,
+
+  "variables": {
+    "greeting": "hello",
+    "count": 42,
+    "pi": 3.14159,
+    "enabled": null
+  },
+
+  "bundles": [
+    { "id": "org.acme:core:1.0.0" }
+  ],
+
+  "categories": [
+    "osgi",
+    "enterprise",
+    "testing"
+  ],
+
+  "configurations": {
+    "org.acme.simple": {
+      "name": "test"
+    }
+  }
+}

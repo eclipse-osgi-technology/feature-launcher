@@ -1,0 +1,38 @@
+{
+  "feature-resource-version": "1.0",
+  "id": "org.acme:extensions:1.0.0",
+
+  "extensions": {
+    "my-text-extension": {
+      "type": "text",
+      "kind": "optional",
+      "text": [
+        "Line one of the text extension.",
+        "Line two of the text extension."
+      ]
+    },
+    "my-artifact-extension": {
+      "type": "artifacts",
+      "kind": "mandatory",
+      "artifacts": [
+        { "id": "org.acme:ddl:1.0.0" },
+        {
+          "id": "org.acme:ddl-custom:1.0.0",
+          "org.acme.target": "custom-db",
+          "org.acme.priority": 10
+        }
+      ]
+    },
+    "my-json-extension": {
+      "type": "json",
+      "kind": "transient",
+      "json": {
+        "cache-size": 1024,
+        "enabled": true,
+        "nested": {
+          "key": "value"
+        }
+      }
+    }
+  }
+}

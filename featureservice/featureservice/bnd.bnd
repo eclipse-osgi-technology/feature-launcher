@@ -1,5 +1,3 @@
-#-includeresource: @nanojson-1.10.jar
-
 -privatepackage: \
   org.eclipse.osgi.technology.featurelauncher.featureservice.base.external,\
   org.eclipse.osgi.technology.featurelauncher.featureservice.base
