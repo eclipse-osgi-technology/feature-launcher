@@ -332,6 +332,58 @@ public class JsonReaderTest {
 	}
 
 	@Test
+	void testConfigValuesNumericTypesAreNormalized() throws Exception {
+		Feature feature = readFeature("test-feature.json");
+
+		Map<String, FeatureConfiguration> configs = feature.getConfigurations();
+
+		// Untyped integer in config: "org.osgi.service.http.port.secure": 8443
+		FeatureConfiguration httpCfg = configs.get("org.apache.felix.http");
+		Object portSecure = httpCfg.getValues().get("org.osgi.service.http.port.secure");
+		assertThat(portSecure).isInstanceOf(Integer.class);
+		assertThat(portSecure).isEqualTo(8443);
+
+		// Untyped integer in factory config: "key2": 42
+		FeatureConfiguration factoryCfg = configs.get("org.acme.factory~instance1");
+		Object key2 = factoryCfg.getValues().get("key2");
+		assertThat(key2).isInstanceOf(Integer.class);
+		assertThat(key2).isEqualTo(42);
+	}
+
+	@Test
+	void testConfigValuesDecimalAndArrayNormalized() throws Exception {
+		String json = """
+				{
+				  "id": "org.acme:numtest:1.0",
+				  "configurations": {
+				    "test.config": {
+				      "intVal": 42,
+				      "longVal": 3000000000,
+				      "doubleVal": 3.14,
+				      "boolVal": true,
+				      "strVal": "hello",
+				      "intArray": [1, 2, 3]
+				    }
+				  }
+				}
+				""";
+		Feature feature = featureServiceImpl.readFeature(new StringReader(json));
+		Map<String, Object> values = feature.getConfigurations().get("test.config").getValues();
+
+		assertThat(values.get("intVal")).isInstanceOf(Integer.class).isEqualTo(42);
+		assertThat(values.get("longVal")).isInstanceOf(Long.class).isEqualTo(3000000000L);
+		assertThat(values.get("doubleVal")).isInstanceOf(Double.class).isEqualTo(3.14);
+		assertThat(values.get("boolVal")).isInstanceOf(Boolean.class).isEqualTo(true);
+		assertThat(values.get("strVal")).isInstanceOf(String.class).isEqualTo("hello");
+
+		@SuppressWarnings("unchecked")
+		List<Object> intArray = (List<Object>) values.get("intArray");
+		assertThat(intArray).hasSize(3);
+		assertThat(intArray).allSatisfy(e -> assertThat(e).isInstanceOf(Integer.class));
+		assertThat(intArray).containsExactly(1, 2, 3);
+	}
+
+	@Test
 	void testReadSingleLineTextExtension() throws Exception {
 		Feature feature = readFeature("test-exfeat2.json");
 

@@ -269,11 +269,11 @@ public class FeatureServiceImpl implements FeatureService {
 				List<Object> list = new ArrayList<>();
 				reader.array();
 				while (reader.next()) {
-					list.add(reader.value());
+					list.add(normalizeJsonValue(reader.value()));
 				}
 				value = list;
 			}
-			default -> value = reader.value();
+			default -> value = normalizeJsonValue(reader.value());
 			}
 
 			String propertyKey = key;
@@ -299,6 +299,27 @@ public class FeatureServiceImpl implements FeatureService {
 			}
 		}
 		return config;
+	}
+
+	/**
+	 * Converts non-standard Number types (e.g. nanojson's JsonLazyNumber) to
+	 * standard Java types that ConfigAdmin accepts (Integer, Long, Double).
+	 */
+	private static Object normalizeJsonValue(Object value) {
+		if (value instanceof Number n
+				&& !(value instanceof Integer || value instanceof Long || value instanceof Double
+						|| value instanceof Float || value instanceof Short || value instanceof Byte)) {
+			double d = n.doubleValue();
+			if (d == Math.floor(d) && !Double.isInfinite(d)) {
+				long l = n.longValue();
+				if (l >= Integer.MIN_VALUE && l <= Integer.MAX_VALUE) {
+					return Integer.valueOf((int) l);
+				}
+				return Long.valueOf(l);
+			}
+			return Double.valueOf(d);
+		}
+		return value;
 	}
 
 	private FeatureExtension[] readExtensions(JsonReader reader) throws JsonParserException {
