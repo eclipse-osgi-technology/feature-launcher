@@ -11,10 +11,10 @@
  * Contributors:
  *     Kentyou - initial implementation
  */
-package org.eclipse.osgi.technology.featurelauncher.launcher.lite.test;
+package org.eclipse.osgi.technology.featurelauncher.launch.all.lite;
 
 import org.eclipse.osgi.technology.featurelauncher.launcher.tests.SimpleCliLaunchTest;
 
-public class LiteLauncherTest extends SimpleCliLaunchTest {
+public class AllLiteLauncherTest extends SimpleCliLaunchTest {
 
 }
