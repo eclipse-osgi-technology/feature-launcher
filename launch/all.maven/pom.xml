@@ -46,12 +46,9 @@
 			<artifactId>org.osgi.service.featurelauncher</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.cm.json</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.feature</artifactId>
+			<groupId>org.eclipse.osgi-technology.featurelauncher.featureservice</groupId>
+			<artifactId>base</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish</groupId>
@@ -142,8 +139,8 @@
 									<include>org.eclipse.osgi-technology.featurelauncher.launch:cli.pico</include>
 									<include>org.eclipse.osgi-technology.featurelauncher.launch:spi</include>
 									<include>info.picocli:picocli</include>
-									<include>org.apache.felix:org.apache.felix.cm.json</include>
-									<include>org.apache.felix:org.apache.felix.feature</include>
+									<include>org.eclipse.osgi-technology.featurelauncher.featureservice:base</include>
+									<include>com.grack:nanojson</include>
 									<include>org.glassfish:jakarta.json</include>
 									<include>org.osgi:org.osgi.service.feature</include>
 									<include>org.osgi:org.osgi.service.featurelauncher</include>
@@ -156,6 +153,8 @@
 									<mainClass>
 										org.eclipse.osgi.technology.featurelauncher.launch.cli.pico.FeatureLauncherCli</mainClass>
 								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 							</transformers>
 						</configuration>
 					</execution>
