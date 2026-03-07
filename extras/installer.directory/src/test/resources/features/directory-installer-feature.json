@@ -1,0 +1,19 @@
+{
+  "id": "org.eclipse.osgi.technology.featurelauncher.extras:directory-installer-feature:1.0.0-SNAPSHOT",
+  "name": "Feature Directory Installer",
+  "complete": true,
+  "bundles": [
+    { "id": "org.eclipse.osgi-technology.featurelauncher.extras:installer.directory:1.0.0-SNAPSHOT" }
+   ],
+  "extensions": {
+    "framework-launching-properties": {
+      "kind": "mandatory",
+      "type": "json",
+      "json": {
+        "osgi.technology.featurelauncher.extras.installer.directory.features.dir": "/app/storage/features",
+        "osgi.technology.featurelauncher.extras.installer.directory.repo.dir": "/app/storage/repo",
+        "osgi.technology.featurelauncher.extras.installer.directory.scan.mode": "ONCE"
+      }
+    }
+  }
+}

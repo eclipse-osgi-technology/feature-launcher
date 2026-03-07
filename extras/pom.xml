@@ -31,6 +31,7 @@
 
 	<modules>
 		<module>clusterinfo</module>
+		<module>installer.directory</module>
 	</modules>
 
 </project>
