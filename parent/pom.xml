@@ -222,6 +222,12 @@
 			</dependency>
 			<dependency>
 				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.service.metatype.annotations</artifactId>
+				<version>1.4.1</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
 				<artifactId>org.osgi.service.feature</artifactId>
 				<version>${osgi.feature.version}</version>
 			</dependency>
@@ -307,7 +313,6 @@
 				<artifactId>picocli</artifactId>
 				<version>${picocli.version}</version>
 			</dependency>
-
 			<!-- default OSGi framework -->
 			<dependency>
 				<groupId>org.apache.felix</groupId>

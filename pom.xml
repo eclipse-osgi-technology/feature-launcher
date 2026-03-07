@@ -34,6 +34,7 @@
 		<module>featureservice</module>
 		<module>examples/featureruntime</module>
 		<module>examples/featurelauncher</module>
+		<module>extras</module>
 	</modules>
 
 	<properties>
