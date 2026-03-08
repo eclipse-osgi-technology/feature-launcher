@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.felix.feature.impl.FeatureServiceImpl;
+import org.eclipse.osgi.technology.featurelauncher.featureservice.base.FeatureServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
