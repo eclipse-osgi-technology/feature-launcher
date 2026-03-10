@@ -32,6 +32,7 @@
 	<modules>
 		<module>clusterinfo</module>
 		<module>installer.directory</module>
+		<module>installer.http.simple</module>
 	</modules>
 
 </project>
