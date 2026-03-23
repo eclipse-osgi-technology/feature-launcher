@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2024 Kentyou and others.
- * All rights reserved. 
- * 
+ * All rights reserved.
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     Kentyou - initial implementation
  */
@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 160.2.1 The Artifact Repository Factory
- * 
+ *
  * @author Michael H. Siemaszko (mhs@into.software)
  * @since Sep 15, 2024
  */
@@ -41,7 +41,7 @@ public class LiteRepositoryFactory implements RepositoryFactory {
 	public Repository createRepository(Path path) {
 		return createRepository(path, Map.of());
 	}
-	
+
 	private Repository createRepository(Path path, Map<String, Object> configurationProperties) {
 		Objects.requireNonNull(path, "Path cannot be null!");
 		validateDirectory(path);
@@ -67,10 +67,10 @@ public class LiteRepositoryFactory implements RepositoryFactory {
 			LOG.debug("Creating local repository for URI {}", uri);
 			return createRepository(Path.of(uri), configurationProperties);
 		}
-		
+
 		throw new UnsupportedOperationException("Remote repositories are not yet supported");
 	}
-	
+
 	public static boolean isLocalArtifactRepository(URI uri) {
 		return "file".equals(uri.getScheme());
 	}

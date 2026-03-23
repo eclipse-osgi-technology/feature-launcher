@@ -60,6 +60,7 @@ import org.osgi.service.featurelauncher.repository.ArtifactRepository;
 import org.eclipse.osgi.technology.featurelauncher.repository.common.osgi.ArtifactRepositoryAdapter;
 import org.eclipse.osgi.technology.featurelauncher.repository.spi.Repository;
 import org.eclipse.osgi.technology.featurelauncher.repository.spi.RepositoryFactory;
+import org.eclipse.osgi.technology.featurelauncher.launch.spi.ArgsFileReader;
 import org.eclipse.osgi.technology.featurelauncher.launch.spi.SecondStageLauncher;
 
 import picocli.CommandLine;
@@ -328,6 +329,13 @@ public class FeatureLauncherCli implements Runnable {
 	}
 
 	public static void main(String[] args) {
+		if (args.length == 0) {
+			String[] fileArgs = ArgsFileReader.readArgsFile();
+			if (fileArgs.length > 0) {
+				System.out.println("Loading configuration from args-file");
+				args = fileArgs;
+			}
+		}
 		int exitCode = new CommandLine(new FeatureLauncherCli()).execute(args);
 
 		System.exit(exitCode);

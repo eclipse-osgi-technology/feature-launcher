@@ -46,6 +46,7 @@ import java.util.stream.Stream;
 import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.DecorationContext;
 import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.LaunchFrameworkFeatureExtensionHandler;
 import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.MutableRepositoryList;
+import org.eclipse.osgi.technology.featurelauncher.launch.spi.ArgsFileReader;
 import org.eclipse.osgi.technology.featurelauncher.launch.spi.SecondStageLauncher;
 import org.eclipse.osgi.technology.featurelauncher.repository.common.osgi.ArtifactRepositoryAdapter;
 import org.eclipse.osgi.technology.featurelauncher.repository.spi.Repository;
@@ -67,6 +68,13 @@ public final class FeatureLauncherCli implements Runnable {
 	private Path defaultFrameworkStorageDir;
 
 	public static void main(String[] rawArgs) {
+		if (rawArgs.length == 0) {
+			String[] fileArgs = ArgsFileReader.readArgsFile();
+			if (fileArgs.length > 0) {
+				System.out.println("Loading configuration from args-file");
+				rawArgs = fileArgs;
+			}
+		}
 		int code = cli(rawArgs);
 		System.exit(code);
 	}

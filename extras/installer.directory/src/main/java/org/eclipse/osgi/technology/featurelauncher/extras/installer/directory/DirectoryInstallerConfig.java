@@ -35,7 +35,7 @@ interface DirectoryInstallerConfig {
 	String PROP_SCAN_INTERVAL = PROP_PREFIX + "scan.interval";
 	String PROP_FEATURE_PATTERN = PROP_PREFIX + "feature.pattern";
 	String PROP_SKIP_PATTERNS = PROP_PREFIX + "skip.patterns";
-
+	String PROP_ARTIFACTS_DIR = PROP_PREFIX + "artifacts.dir";
 	long DEFAULT_SCAN_INTERVAL = 10;
 	String DEFAULT_SCAN_MODE = "ONCE";
 	String DEFAULT_FEATURE_PATTERN = "*.json";
@@ -74,4 +74,9 @@ interface DirectoryInstallerConfig {
 		description = "Comma-separated patterns to skip",
 		required = false, defaultValue = DEFAULT_SKIP_PATTERNS)
 	String skip_patterns();
+
+	@AttributeDefinition(name = "Artifacts Directory",
+		description = "Base directory containing mounted artifact folders. Each child directory may contain repo/ and features/ subdirectories.",
+		required = false)
+	String artifacts_dir();
 }

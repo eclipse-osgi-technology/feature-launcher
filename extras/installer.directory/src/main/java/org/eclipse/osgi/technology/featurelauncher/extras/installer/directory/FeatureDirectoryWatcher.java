@@ -15,12 +15,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.osgi.service.feature.ID;
 import org.osgi.service.featurelauncher.runtime.FeatureRuntime;
@@ -31,7 +33,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Watches a directory for feature JSON files and installs/updates/removes them
  * via FeatureRuntime.
- *
  */
 class FeatureDirectoryWatcher {
 
@@ -58,12 +59,16 @@ class FeatureDirectoryWatcher {
 	private final long intervalSeconds;
 	private final String featurePattern;
 	private final String[] skipPatterns;
+	private final Path artifactsDir;
+
+	private final List<Path> discoveredRepoDirs = new ArrayList<>();
+	private final List<Path> discoveredFeatureDirs = new ArrayList<>();
 
 	private final Map<Path, TrackedFeature> trackedFeatures = new HashMap<>();
 	private volatile Thread watchThread;
 
 	FeatureDirectoryWatcher(FeatureRuntime featureRuntime, String featuresDir, String repoDir, String scanMode,
-			long intervalSeconds, String featurePattern, String skipPatternsStr) {
+			long intervalSeconds, String featurePattern, String skipPatternsStr, String artifactsDir) {
 		this.featureRuntime = featureRuntime;
 		this.featuresDir = Paths.get(featuresDir);
 		this.repoDir = repoDir != null && !repoDir.isEmpty() ? Paths.get(repoDir) : null;
@@ -78,6 +83,8 @@ class FeatureDirectoryWatcher {
 		for (int i = 0; i < this.skipPatterns.length; i++) {
 			this.skipPatterns[i] = this.skipPatterns[i].trim();
 		}
+
+		this.artifactsDir = artifactsDir != null && !artifactsDir.isEmpty() ? Paths.get(artifactsDir) : null;
 	}
 
 	void start() {
@@ -87,6 +94,8 @@ class FeatureDirectoryWatcher {
 		}
 
 		LOG.info("Starting directory watcher - dir={}, mode={}, pattern={}", featuresDir, scanMode, featurePattern);
+
+		discoverArtifacts();
 
 		scan();
 
@@ -159,14 +168,29 @@ class FeatureDirectoryWatcher {
 	}
 
 	private List<Path> collectFeatureFiles() {
-		try (var stream = Files.list(featuresDir)) {
-			return stream.filter(Files::isRegularFile)
+		List<Path> allFiles = new ArrayList<>();
+
+		collectFeaturesFrom(featuresDir, allFiles);
+
+		for (Path dir : discoveredFeatureDirs) {
+			collectFeaturesFrom(dir, allFiles);
+		}
+
+		allFiles.sort(Comparator.comparing(p -> p.getFileName().toString()));
+		return allFiles;
+	}
+
+	private void collectFeaturesFrom(Path dir, List<Path> target) {
+		if (!Files.isDirectory(dir)) {
+			return;
+		}
+		try (var stream = Files.list(dir)) {
+			stream.filter(Files::isRegularFile)
 					.filter(p -> matchesGlob(p.getFileName().toString(), featurePattern))
 					.filter(p -> !shouldSkip(p.getFileName().toString()))
-					.sorted(Comparator.comparing(p -> p.getFileName().toString())).toList();
+					.forEach(target::add);
 		} catch (IOException e) {
-			LOG.error("Error reading features directory: {}", featuresDir, e);
-			return List.of();
+			LOG.error("Error reading features directory: {}", dir, e);
 		}
 	}
 
@@ -236,16 +260,53 @@ class FeatureDirectoryWatcher {
 
 	private void configureRepositories(FeatureRuntime.OperationBuilder<?> builder) {
 		builder.useDefaultRepositories(true);
-		addLocalRepository(builder);
-	}
-
-	private void addLocalRepository(FeatureRuntime.OperationBuilder<?> builder) {
 		if (repoDir != null && Files.isDirectory(repoDir)) {
 			builder.addRepository("local:" + repoDir, featureRuntime.createRepository(repoDir));
 		}
+		for (Path repo : discoveredRepoDirs) {
+			builder.addRepository("artifact:" + repo.getParent().getFileName(), featureRuntime.createRepository(repo));
+		}
+	}
+
+	/**
+	 * Discovers artifact folders under the artifacts directory.
+	 * Each child directory may contain:
+	 * <ul>
+	 *   <li>{@code repo/} — registered as a repository for bundle resolution</li>
+	 *   <li>{@code features/} — scanned for feature JSON files</li>
+	 * </ul>
+	 */
+	private void discoverArtifacts() {
+		if (artifactsDir == null || !Files.isDirectory(artifactsDir)) {
+			return;
+		}
+
+		LOG.info("Discovering artifacts in {}", artifactsDir);
+		try (Stream<Path> children = Files.list(artifactsDir)) {
+			children.filter(Files::isDirectory)
+					.sorted()
+					.forEach(child -> {
+						String name = child.getFileName().toString();
+						Path repoPath = child.resolve("repo");
+						Path featuresPath = child.resolve("features");
+
+						if (Files.isDirectory(repoPath)) {
+							discoveredRepoDirs.add(repoPath);
+							LOG.info("  Discovered repository: {}/repo", name);
+						}
+						if (Files.isDirectory(featuresPath)) {
+							discoveredFeatureDirs.add(featuresPath);
+							LOG.info("  Discovered features:   {}/features", name);
+						}
+					});
+		} catch (IOException e) {
+			LOG.error("Failed to list artifacts directory '{}'", artifactsDir, e);
+		}
+
+		LOG.info("Discovered {} repository(ies) and {} feature directory(ies)",
+				discoveredRepoDirs.size(), discoveredFeatureDirs.size());
 	}
 
 	private record TrackedFeature(ID featureId, long lastModified, long size) {
 	}
-
 }

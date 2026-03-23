@@ -106,6 +106,10 @@ class Help {
 		System.out.println("  -h, --help                             Show this help");
 		System.out.println("  -V, --version                          Print version");
 		System.out.println();
+		System.out.println("Args file:");
+		System.out.println("  If no arguments are provided, reads from /app/launcher.args");
+		System.out.println("  Override path with -Dlauncher.argsfile=/path/to/file");
+		System.out.println();
 	}
 
 	public static void printVersion() {

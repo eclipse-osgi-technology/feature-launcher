@@ -35,7 +35,7 @@ public class FeatureDirectoryInstallerActivator implements BundleActivator {
 	static final String PROP_SCAN_INTERVAL = DirectoryInstallerConfig.PROP_SCAN_INTERVAL;
 	static final String PROP_FEATURE_PATTERN = DirectoryInstallerConfig.PROP_FEATURE_PATTERN;
 	static final String PROP_SKIP_PATTERNS = DirectoryInstallerConfig.PROP_SKIP_PATTERNS;
-
+	static final String PROP_ARTIFACTS_DIR = DirectoryInstallerConfig.PROP_ARTIFACTS_DIR;
 	static final long DEFAULT_SCAN_INTERVAL = DirectoryInstallerConfig.DEFAULT_SCAN_INTERVAL;
 
 	private ServiceTracker<FeatureRuntime, FeatureDirectoryWatcher> tracker;
@@ -49,6 +49,7 @@ public class FeatureDirectoryInstallerActivator implements BundleActivator {
 		long interval = parseLong(context.getProperty(PROP_SCAN_INTERVAL), DEFAULT_SCAN_INTERVAL);
 		String featurePattern = context.getProperty(PROP_FEATURE_PATTERN);
 		String skipPatterns = context.getProperty(PROP_SKIP_PATTERNS);
+		String artifactsDir = context.getProperty(PROP_ARTIFACTS_DIR);
 
 		LOG.info("Configuration: {}={}", PROP_FEATURES_DIR, featuresDir);
 		LOG.info("Configuration: {}={}", PROP_REPO_DIR, repoDir);
@@ -56,6 +57,7 @@ public class FeatureDirectoryInstallerActivator implements BundleActivator {
 		LOG.info("Configuration: {}={}", PROP_SCAN_INTERVAL, interval);
 		LOG.info("Configuration: {}={}", PROP_FEATURE_PATTERN, featurePattern);
 		LOG.info("Configuration: {}={}", PROP_SKIP_PATTERNS, skipPatterns);
+		LOG.info("Configuration: {}={}", PROP_ARTIFACTS_DIR, artifactsDir);
 
 		if (featuresDir == null || featuresDir.isEmpty()) {
 			LOG.warn("No features directory configured ({} is not set)", PROP_FEATURES_DIR);
@@ -72,7 +74,7 @@ public class FeatureDirectoryInstallerActivator implements BundleActivator {
 				if (runtime != null) {
 					LOG.info("FeatureRuntime service available, starting directory watcher");
 					FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(runtime, featuresDir, repoDir,
-							scanMode, interval, featurePattern, skipPatterns);
+							scanMode, interval, featurePattern, skipPatterns, artifactsDir);
 					watcher.start();
 					return watcher;
 				}

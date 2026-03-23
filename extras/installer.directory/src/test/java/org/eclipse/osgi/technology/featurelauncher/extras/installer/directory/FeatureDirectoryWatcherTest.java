@@ -76,7 +76,7 @@ class FeatureDirectoryWatcherTest {
 		Files.writeString(featureFile, "{}");
 
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(), null, "ONCE",
-				30, null, null);
+				30, null, null, null);
 		watcher.start();
 
 		verify(featureRuntime, times(1)).install(any(Reader.class));
@@ -90,7 +90,7 @@ class FeatureDirectoryWatcherTest {
 		Files.writeString(tempDir.resolve("30-third.json"), "{}");
 
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(), null, "ONCE",
-				30, null, null);
+				30, null, null, null);
 		watcher.start();
 
 		verify(featureRuntime, times(3)).install(any(Reader.class));
@@ -103,7 +103,7 @@ class FeatureDirectoryWatcherTest {
 		Files.writeString(tempDir.resolve("10-app.json"), "{}");
 
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(), null, "ONCE",
-				30, null, null);
+				30, null, null, null);
 		watcher.start();
 
 		verify(featureRuntime, times(3)).install(any(Reader.class));
@@ -115,7 +115,7 @@ class FeatureDirectoryWatcherTest {
 		Files.writeString(tempDir.resolve("install-me.json"), "{}");
 
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(), null, "ONCE",
-				30, null, "skip-me.json");
+				30, null, "skip-me.json", null);
 		watcher.start();
 
 		verify(featureRuntime, times(1)).install(any(Reader.class));
@@ -128,7 +128,7 @@ class FeatureDirectoryWatcherTest {
 		Files.writeString(tempDir.resolve("data.txt"), "text");
 
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(), null, "ONCE",
-				30, "*.json", null);
+				30, "*.json", null, null);
 		watcher.start();
 
 		verify(featureRuntime, times(1)).install(any(Reader.class));
@@ -137,7 +137,7 @@ class FeatureDirectoryWatcherTest {
 	@Test
 	void emptyDirectory_noInstalls() throws Exception {
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(), null, "ONCE",
-				30, null, null);
+				30, null, null, null);
 		watcher.start();
 
 		verify(featureRuntime, never()).install(any(Reader.class));
@@ -146,7 +146,7 @@ class FeatureDirectoryWatcherTest {
 	@Test
 	void nonExistentDirectory_doesNotThrow() {
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, "/nonexistent/path", null, "ONCE",
-				30, null, null);
+				30, null, null, null);
 		watcher.start();
 
 		verify(featureRuntime, never()).install(any(Reader.class));
@@ -157,7 +157,7 @@ class FeatureDirectoryWatcherTest {
 		Files.writeString(tempDir.resolve("10-first.json"), "{}");
 
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(), null, "WATCH",
-				1, null, null);
+				1, null, null, null);
 		watcher.start();
 
 		verify(featureRuntime, times(1)).install(any(Reader.class));
@@ -175,7 +175,7 @@ class FeatureDirectoryWatcherTest {
 		Files.writeString(featureFile, "{}");
 
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(), null, "WATCH",
-				1, null, null);
+				1, null, null, null);
 		watcher.start();
 
 		verify(featureRuntime, times(1)).install(any(Reader.class));
@@ -193,7 +193,7 @@ class FeatureDirectoryWatcherTest {
 		Files.writeString(featureFile, "{}");
 
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(), null, "WATCH",
-				1, null, null);
+				1, null, null, null);
 		watcher.start();
 
 		verify(featureRuntime, times(1)).install(any(Reader.class));
@@ -211,7 +211,7 @@ class FeatureDirectoryWatcherTest {
 		Files.writeString(tempDir.resolve("10-app.json"), "{}");
 
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(), null, "WATCH",
-				1, null, null);
+				1, null, null, null);
 		watcher.start();
 		watcher.stop();
 
@@ -231,7 +231,7 @@ class FeatureDirectoryWatcherTest {
 		when(featureRuntime.createRepository(repoDir)).thenReturn(mockRepo);
 
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(),
-				repoDir.toString(), "ONCE", 30, null, null);
+				repoDir.toString(), "ONCE", 30, null, null, null);
 		watcher.start();
 
 		verify(featureRuntime).createRepository(repoDir);
@@ -243,7 +243,7 @@ class FeatureDirectoryWatcherTest {
 		Files.writeString(tempDir.resolve("10-app.json"), "{}");
 
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(), null, null,
-				30, null, null);
+				30, null, null, null);
 		watcher.start();
 
 		verify(featureRuntime, times(1)).install(any(Reader.class));
@@ -259,7 +259,7 @@ class FeatureDirectoryWatcherTest {
 		Files.writeString(tempDir.resolve("01-real-feature.json"), "{}");
 
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(), null, "ONCE",
-				30, null, null);
+				30, null, null, null);
 		watcher.start();
 
 		verify(featureRuntime, times(3)).install(any(Reader.class));
@@ -273,7 +273,7 @@ class FeatureDirectoryWatcherTest {
 		Files.writeString(tempDir.resolve("20-second.json"), "{}");
 
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(), null, "ONCE",
-				30, null, null);
+				30, null, null, null);
 		watcher.start();
 
 		verify(featureRuntime, times(2)).install(any(Reader.class));
@@ -284,7 +284,7 @@ class FeatureDirectoryWatcherTest {
 		Files.writeString(tempDir.resolve("10-app.json"), "{}");
 
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(), null, "ONCE",
-				30, null, null);
+				30, null, null, null);
 		watcher.start();
 
 		verify(featureRuntime, never()).createRepository(any(Path.class));
@@ -297,7 +297,7 @@ class FeatureDirectoryWatcherTest {
 		Files.createDirectory(tempDir.resolve("subdir.json")); // directory with .json suffix
 
 		FeatureDirectoryWatcher watcher = new FeatureDirectoryWatcher(featureRuntime, tempDir.toString(), null, "ONCE",
-				30, null, null);
+				30, null, null, null);
 		watcher.start();
 
 		verify(featureRuntime, times(1)).install(any(Reader.class));
