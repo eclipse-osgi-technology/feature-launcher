@@ -329,16 +329,55 @@ public class FeatureLauncherCli implements Runnable {
 	}
 
 	public static void main(String[] args) {
+		args = resolveArgsFile(args);
+		int exitCode = new CommandLine(new FeatureLauncherCli()).execute(args);
+
+		System.exit(exitCode);
+	}
+
+	/**
+	 * Resolves {@code @file} args-file syntax (like {@code javac @args.txt}).
+	 *
+	 * <p>If the single argument starts with {@code @}, the remainder is treated
+	 * as a file path and all arguments are read from that file. Mixing
+	 * {@code @file} with other options is not allowed.
+	 *
+	 * <p>If no arguments are given at all, falls back to the default args-file.
+	 */
+	static String[] resolveArgsFile(String[] args) {
+		for (int i = 0; i < args.length; i++) {
+			if (args[i].startsWith("@")) {
+				if (args.length > 1) {
+					System.err.println(
+							"@file cannot be combined with other options. "
+									+ "Use either @file or command-line options, not both.");
+					System.exit(2);
+				}
+				String filePath = args[i].substring(1);
+				if (filePath.isBlank()) {
+					System.err.println("@file requires a file path, e.g. @launcher.args");
+					System.exit(2);
+				}
+				String[] fileArgs = ArgsFileReader.readArgsFile(Path.of(filePath));
+				if (fileArgs.length == 0) {
+					System.err.println("Args file not found or empty: " + filePath);
+					System.exit(2);
+				}
+				System.out.println("Loading configuration from args-file: " + filePath);
+				return fileArgs;
+			}
+		}
+
+		// Fallback: no args at all → try default args-file
 		if (args.length == 0) {
 			String[] fileArgs = ArgsFileReader.readArgsFile();
 			if (fileArgs.length > 0) {
 				System.out.println("Loading configuration from args-file");
-				args = fileArgs;
+				return fileArgs;
 			}
 		}
-		int exitCode = new CommandLine(new FeatureLauncherCli()).execute(args);
 
-		System.exit(exitCode);
+		return args;
 	}
 
 	private MutableRepositoryList getRepositories(RepositoryFactory artifactRepositoryFactory,

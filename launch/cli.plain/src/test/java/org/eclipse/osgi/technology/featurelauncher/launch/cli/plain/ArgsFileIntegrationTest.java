@@ -142,6 +142,24 @@ class ArgsFileIntegrationTest {
 	}
 
 	@Test
+	void shouldLoadFromAtFile(@TempDir Path tempDir) throws IOException {
+		Path argsFile = tempDir.resolve("launcher.args");
+		Files.writeString(argsFile, String.join("\n",
+				"-f " + FEATURE_FILE_PATH.toAbsolutePath(),
+				"--impl-default-repos",
+				"--impl-dry-run"));
+
+		// Use @file syntax
+		String[] resolved = FeatureLauncherCli.resolveArgsFile(
+				new String[]{"@" + argsFile.toAbsolutePath()});
+
+		int exitCode = FeatureLauncherCli.cli(resolved);
+		assertEquals(0, exitCode, () -> err.toString());
+		assertTrue(out.toString().contains("Dry-run requested"));
+		assertTrue(out.toString().contains("Loading configuration from args-file:"));
+	}
+
+	@Test
 	void shouldHandleAllSpecOptions(@TempDir Path tempDir) throws IOException {
 		Path argsFile = tempDir.resolve("launcher.args");
 		Files.writeString(argsFile, String.join("\n",

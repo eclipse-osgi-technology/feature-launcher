@@ -93,8 +93,10 @@ class Help {
 		System.out.println("Usage:");
 		System.out.println("  feature-launcher <feature-json>");
 		System.out.println("  feature-launcher --feature-file <path>");
+		System.out.println("  feature-launcher @<args-file>");
 		System.out.println();
 		System.out.println("Options:");
+		System.out.println("  -f, --feature-file <path>              Feature JSON file path");
 		System.out.println("  -a, --artifact-repository uri[,k=v]*   Add remote repository");
 		System.out.println("      --impl-default-repos               Use ~/.m2 + Maven Central");
 		System.out.println("  -d, --decorator fqcn                   Add FeatureDecorator");
@@ -106,9 +108,13 @@ class Help {
 		System.out.println("  -h, --help                             Show this help");
 		System.out.println("  -V, --version                          Print version");
 		System.out.println();
-		System.out.println("Args file:");
-		System.out.println("  If no arguments are provided, reads from /app/launcher.args");
-		System.out.println("  Override path with -Dlauncher.argsfile=/path/to/file");
+		System.out.println("Args file (@file):");
+		System.out.println("  @<path>  Read all arguments from a text file (one option per line).");
+		System.out.println("           Cannot be combined with other command-line options.");
+		System.out.println("           Example: feature-launcher @launcher.args");
+		System.out.println();
+		System.out.println("  If no arguments are provided at all, reads from /app/launcher.args");
+		System.out.println("  Override default path with -Dlauncher.argsfile=/path/to/file");
 		System.out.println();
 	}
 

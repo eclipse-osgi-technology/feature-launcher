@@ -68,15 +68,57 @@ public final class FeatureLauncherCli implements Runnable {
 	private Path defaultFrameworkStorageDir;
 
 	public static void main(String[] rawArgs) {
+		rawArgs = resolveArgsFile(rawArgs);
+		int code = cli(rawArgs);
+		System.exit(code);
+	}
+
+	/**
+	 * Resolves {@code @file} args-file syntax (like {@code javac @args.txt}).
+	 *
+	 * <p>If the single argument starts with {@code @}, the remainder is treated
+	 * as a file path and all arguments are read from that file. Mixing
+	 * {@code @file} with other options is not allowed.
+	 *
+	 * <p>If no arguments are given at all, falls back to the default args-file
+	 * ({@code /app/launcher.args} or the path in system property
+	 * {@code launcher.argsfile}).
+	 */
+	static String[] resolveArgsFile(String[] rawArgs) {
+		// Check for @file syntax
+		for (int i = 0; i < rawArgs.length; i++) {
+			if (rawArgs[i].startsWith("@")) {
+				if (rawArgs.length > 1) {
+					System.err.println(
+							"@file cannot be combined with other options. "
+									+ "Use either @file or command-line options, not both.");
+					System.exit(EXIT_CLI);
+				}
+				String filePath = rawArgs[i].substring(1);
+				if (filePath.isBlank()) {
+					System.err.println("@file requires a file path, e.g. @launcher.args");
+					System.exit(EXIT_CLI);
+				}
+				String[] fileArgs = ArgsFileReader.readArgsFile(Path.of(filePath));
+				if (fileArgs.length == 0) {
+					System.err.println("Args file not found or empty: " + filePath);
+					System.exit(EXIT_CLI);
+				}
+				System.out.println("Loading configuration from args-file: " + filePath);
+				return fileArgs;
+			}
+		}
+
+		// Fallback: no args at all → try default args-file
 		if (rawArgs.length == 0) {
 			String[] fileArgs = ArgsFileReader.readArgsFile();
 			if (fileArgs.length > 0) {
 				System.out.println("Loading configuration from args-file");
-				rawArgs = fileArgs;
+				return fileArgs;
 			}
 		}
-		int code = cli(rawArgs);
-		System.exit(code);
+
+		return rawArgs;
 	}
 
 	static int cli(String[] rawArgs) {
