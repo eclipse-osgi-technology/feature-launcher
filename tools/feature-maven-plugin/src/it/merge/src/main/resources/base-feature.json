@@ -1,0 +1,12 @@
+{
+  "id": "org.example:base-feature:1.0.0",
+  "name": "Base Feature",
+  "variables": {
+    "baseVar": "baseValue"
+  },
+  "configurations": {
+    "com.example.base": {
+      "key1": "value1"
+    }
+  }
+}

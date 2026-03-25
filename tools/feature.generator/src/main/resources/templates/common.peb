@@ -1,0 +1,119 @@
+{#
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation
+ * All rights reserved. 
+ * 
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * 
+ * Contributors:
+ *     Stefan Bischof - initial
+ #}
+{% macro printComponents (components, metatypes) -%}
+{%- for c in components -%}
+{{ printComponentJsonConfiguratorSnippet(c, metatypes) }}
+{%- if not loop.last %}
+
+{%- endif -%}
+{%- endfor -%}
+{%- endmacro %}
+
+{% macro printComponentJsonConfiguratorSnippet (c, metatypes) -%}
+{% for pid in c.configurationPid -%}
+    /*
+     * Component: {{ c.name }}
+     * policy:    {{ c.configurationPolicy }}
+     */
+{% set pidOcd = "notset" -%}
+{% set factoryPidOcd = "notset" -%}
+{% for ocd in metatypes -%}
+{% if ocd.pids contains pid -%}
+{% set pidOcd = ocd -%}
+{% elseif ocd.factoryPids contains pid -%}
+{% set factoryPidOcd = ocd -%}
+{% endif -%}
+{% endfor -%}
+{% set o = "notset" -%}
+{% if pidOcd != 'notset' -%}
+    // "{{ pid }}": {
+{% set o = pidOcd -%}
+{% elseif factoryPidOcd != 'notset' -%}
+    // "{{ pid }}~FactoryNameChangeIt": {
+{% set o = factoryPidOcd -%}
+{% else -%}
+    // "{{ pid }}": {
+{% endif -%}
+      //# Component properties
+{% if c.properties is empty -%}
+      // none
+{% else -%}
+{% for entry in c.properties -%}
+      /*
+       * Type = {{ common.printPropertyType(entry.value.type,entry.value.multiValue) }}
+{% if entry.value.values is not empty -%}
+       * Default = {{ common.printPropertyValues(entry.value.type,entry.value.values,entry.value.multiValue) }}
+{% endif -%}
+       */
+      // "{{ entry.key }}": null{% if not loop.last %},{% endif %}
+
+{% endfor -%}
+{% endif -%}
+      //# Reference bindings
+{% if c.references is empty -%}
+      // none
+{% else -%}
+{% for r in c.references -%}
+      // "{{r.name}}.target": {% if r.target=='' %}"(component.pid=*)"{% else %}"{{r.target}}"{% endif %}{% if not loop.last %},{% endif %}
+
+{% endfor -%}
+{% endif -%}
+      //# ObjectClassDefinition - Attributes
+{% if o == 'notset' -%}
+      // (No PidOcd available.)
+{% else -%}
+{% for a in o.attributes -%}
+      /*
+       * Required = {{a.required}}
+       * Type = {{ common.printPropertyType(a.type,(a.cardinality != 0)) }}
+{% if a.description is not empty -%}
+       * Description = {{ a.description }}
+{% endif -%}
+{% if a.values is not empty -%}
+       * Default = {{ common.printPropertyValues(a.type,a.values,(a.cardinality != 0)) }}
+{% endif -%}
+{% if ( a.max is not empty ) or ( a.min is not empty ) -%}
+       * Value restriction = `min = {{a.min}}` / `max = {{a.max}}`
+{% elseif a.options is not empty -%}
+       * Value restriction = {{ common.printOptions(a.options) }}
+{% endif -%}
+       */
+      {% if a.required!='true' %}// {% endif %}"{{ a.id }}": null{% if not loop.last %},{% endif %}
+
+{% endfor -%}
+{% endif -%}
+    // }{% if not loop.last %}
+
+    // ------------------------------------------------
+{% endif %}
+{% endfor -%}
+{%- endmacro %}
+
+{% macro printPropertyType (type, multiValue) -%}
+{{ type }}{{ (multiValue) ? '[]' : ''}}
+{%- endmacro %}
+
+
+{% macro printPropertyValues (type, values, multiValue) -%}
+{%- if multiValue -%}
+{{ '[' }}{% for v in values %}{{ (loop.first) ? '' : ', ' }}{{ (type == 'String' ) ? '"'~v~'"' : v}}{% endfor %}{{ ']' }}
+{%- else -%}
+{{ (type == 'String' ) ? '"'~(values[0])~'"' : values[0] }}
+{%- endif -%}
+{%- endmacro %}
+
+
+{% macro printOptions (option) -%}
+{% for o in option %}{{ (loop.first) ? '' : ', ' }}{{ '"'~o.value~'"' }}{% endfor %}
+{%- endmacro %}

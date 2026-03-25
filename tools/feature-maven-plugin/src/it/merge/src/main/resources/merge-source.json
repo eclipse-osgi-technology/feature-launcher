@@ -1,0 +1,12 @@
+{
+  "id": "org.example:merge-source:1.0.0",
+  "variables": {
+    "mergedVar": "mergedValue",
+    "baseVar": "overridden"
+  },
+  "configurations": {
+    "com.example.merged": {
+      "key2": "value2"
+    }
+  }
+}

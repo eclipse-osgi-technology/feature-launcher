@@ -1,0 +1,83 @@
+{#
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation
+ * All rights reserved. 
+ * 
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * 
+ * Contributors:
+ *     Stefan Bischof - initial
+ #}
+{% import 'json.peb' as json %}
+{% import 'common.peb' as common %}
+{
+  "feature-resource-version": "1.0",
+  "id": "{{ meta.id }}"
+{%- if meta.name.isPresent %},
+  "name": "{{ meta.name.get }}"
+{%- endif %}
+{%- if meta.description.isPresent %},
+  "description": "{{ meta.description.get }}"
+{%- endif %}
+{%- if meta.docURL.isPresent %},
+  "docURL": "{{ meta.docURL.get }}"
+{%- endif %}
+{%- if meta.license.isPresent %},
+  "license": "{{ meta.license.get }}"
+{%- endif %}
+{%- if meta.scm.isPresent %},
+  "scm": "{{ meta.scm.get }}"
+{%- endif %}
+{%- if meta.vendor.isPresent %},
+  "vendor": "{{ meta.vendor.get }}"
+{%- endif %}
+{%- if not meta.categories.isEmpty %},
+  "categories": {{ json.jsonStringArray( 4,  meta.categories ) }}
+{%- endif %}
+{%- if meta.complete %},
+  "complete": {{ meta.complete }}
+{%- endif %}
+{%- if variables is not empty %},
+  "variables": {
+{% for entry in variables -%}
+    "{{ entry.key }}": {{ json.jsonValue(entry.value) }}{% if not loop.last %},{% endif %}
+
+{% endfor -%}
+  }
+{%- endif %}
+{%- if ids is not empty %},
+  "bundles": [
+{% for id in ids -%}
+    {
+      "id": "{{ id }}"
+{%- if setting.featureBundleSetting.hashSetting.md5 %},
+      "checksum.md5": "{{ checksumMap[id].md5 }}"
+{%- endif %}
+{%- if setting.featureBundleSetting.hashSetting.sha1 %},
+      "checksum.sha1": "{{ checksumMap[id].sha1 }}"
+{%- endif %}
+{%- if setting.featureBundleSetting.hashSetting.sha256 %},
+      "checksum.sha256": "{{ checksumMap[id].sha256 }}"
+{%- endif %}
+{%- if setting.featureBundleSetting.hashSetting.sha512 %},
+      "checksum.sha512": "{{ checksumMap[id].sha512 }}"
+{%- endif %}
+
+    }{% if not loop.last %},{% endif %}
+
+{% endfor -%}
+  ]
+{%- endif %}
+{%- if setting.configSetting.byFeature and ids is not empty %},
+  "configuration": {
+{% for id in ids -%}
+{{ common.printComponents(componentsMap[id], ocdsMap[id] ) }}
+{%- endfor -%}
+  }
+{%- endif %}
+
+}
+
