@@ -26,6 +26,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.ctc.wstx.stax.WstxEventFactory;
+import com.ctc.wstx.stax.WstxInputFactory;
+import com.ctc.wstx.stax.WstxOutputFactory;
 import org.apache.maven.internal.impl.resolver.MavenSessionBuilderSupplier;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
@@ -175,5 +178,12 @@ abstract class AbstractMavenRepositoryImpl implements FileSystemRepository {
 		sessionBuilder.setLocalRepositoryManager(localRepositoryManager);
 
 		return sessionBuilder.build();
+	}
+
+	// https://github.com/apache/maven-shade-plugin/issues/255
+	static {
+		Class<WstxInputFactory> toStopMinimise1 =  WstxInputFactory.class;
+		Class<WstxEventFactory> toStopMinimise2 =  WstxEventFactory.class;
+		Class<WstxOutputFactory> toStopMinimise3 =  WstxOutputFactory.class;
 	}
 }
