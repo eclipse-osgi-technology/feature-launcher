@@ -56,8 +56,10 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.feature.Feature;
+import org.osgi.service.feature.FeatureBuilder;
 import org.osgi.service.feature.FeatureBundle;
 import org.osgi.service.feature.FeatureConfiguration;
+import org.osgi.service.feature.FeatureExtension;
 import org.osgi.service.feature.FeatureService;
 import org.osgi.service.feature.ID;
 import org.osgi.service.featurelauncher.decorator.AbandonOperationException;
@@ -525,6 +527,17 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 				throw new FeatureRuntimeException("Feature decoration handling failed!", e);
 			}
 
+			boolean decorated = feature != originalFeature;
+
+			// Apply variable overrides and validate that every required variable
+			// has a value (160.3); a missing required variable fails the
+			// operation. Only rebuild the feature when the merged variables
+			// actually differ, so an undecorated feature keeps its identity.
+			Map<String, Object> mergedVariables = mergeVariables(feature);
+			if (!mergedVariables.equals(feature.getVariables())) {
+				feature = rebuildWithVariables(feature, mergedVariables);
+			}
+
 			try {
 				// Install bundles
 				List<InstalledBundle> installedBundles = installBundles(feature, featureBundlesIDs);
@@ -537,7 +550,7 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 
 				// construct installed feature
 				InstalledFeature installedFeature = constructInstalledFeature(feature, originalFeature,
-						feature != originalFeature, false, installedBundles, installedConfigurations);
+						decorated, false, installedBundles, installedConfigurations);
 
 				// update "owning features" in other 'installedFeatures'
 				updateInstalledFeaturesOnAddOrUpdate(installedFeature);
@@ -1215,6 +1228,35 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 						String.format("The feature %d has mandatory extensions for which are not understood",
 								unknownMandatoryFeatureExtensions.size()));
 			}
+		}
+
+		/**
+		 * Returns a copy of the feature whose variables are replaced by the
+		 * supplied (already merged and validated) variables, so that the
+		 * installed feature reflects any overrides supplied via
+		 * {@link #withVariables(Map)}. All other feature content is preserved and
+		 * the feature ID is unchanged.
+		 */
+		protected Feature rebuildWithVariables(Feature feature, Map<String, Object> variables) {
+			FeatureBuilder builder = featureService.getBuilderFactory()
+					.newFeatureBuilder(feature.getID())
+					.setComplete(feature.isComplete());
+
+			feature.getName().ifPresent(builder::setName);
+			feature.getDescription().ifPresent(builder::setDescription);
+			feature.getDocURL().ifPresent(builder::setDocURL);
+			feature.getLicense().ifPresent(builder::setLicense);
+			feature.getSCM().ifPresent(builder::setSCM);
+			feature.getVendor().ifPresent(builder::setVendor);
+
+			builder.addCategories(feature.getCategories().toArray(new String[0]));
+			builder.addBundles(feature.getBundles().toArray(new FeatureBundle[0]));
+			builder.addConfigurations(
+					feature.getConfigurations().values().toArray(new FeatureConfiguration[0]));
+			builder.addExtensions(feature.getExtensions().values().toArray(new FeatureExtension[0]));
+			builder.addVariables(variables);
+
+			return builder.build();
 		}
 
 		protected Map<String, Object> mergeVariables(Feature feature) {
