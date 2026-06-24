@@ -451,6 +451,10 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 		 */
 		@Override
 		public InstalledFeature complete() throws FeatureRuntimeException {
+			// Operation builders are single use: once completed every method,
+			// including complete()/install()/update(), must throw (160.5).
+			ensureNotCompletedYet();
+
 			this.isCompleted = true;
 
 			if (this.useDefaultRepositories) {
