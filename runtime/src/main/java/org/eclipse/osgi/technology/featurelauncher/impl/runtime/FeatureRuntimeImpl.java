@@ -940,7 +940,26 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 
 		protected void maybeSetBundleStartLevel(Bundle bundle, Map<String, Object> metadata) {
 			if (metadata.containsKey(BUNDLE_START_LEVEL_METADATA)) {
-				int startlevel = Integer.valueOf(metadata.get(BUNDLE_START_LEVEL_METADATA).toString()).intValue();
+				Object rawStartLevel = metadata.get(BUNDLE_START_LEVEL_METADATA);
+
+				int startlevel;
+				try {
+					startlevel = Integer.parseInt(String.valueOf(rawStartLevel));
+				} catch (NumberFormatException e) {
+					throw new FeatureRuntimeException(
+							String.format("Invalid %s metadata value '%s' for bundle %s: not an integer",
+									BUNDLE_START_LEVEL_METADATA, rawStartLevel, bundle.getSymbolicName()),
+							e);
+				}
+
+				// A bundle start level must be between 1 and Integer.MAX_VALUE
+				// inclusive; 0 is reserved by the framework for the System Bundle.
+				if (startlevel < 1) {
+					throw new FeatureRuntimeException(
+							String.format("Invalid %s metadata value '%d' for bundle %s: must be between 1 and %d",
+									BUNDLE_START_LEVEL_METADATA, startlevel, bundle.getSymbolicName(),
+									Integer.MAX_VALUE));
+				}
 
 				bundle.adapt(BundleStartLevel.class).setStartLevel(startlevel);
 			}
