@@ -269,8 +269,11 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 
 		InstalledFeature installedFeature = getInstalledFeatureById(featureId);
 
-		Objects.requireNonNull(installedFeature,
-				String.format("No feature matching %s ID could be found!", featureId.toString()));
+		// It is not an error to remove a feature which is not known to the
+		// Feature Runtime; this must return without altering the system.
+		if (installedFeature == null) {
+			return;
+		}
 
 		new RemoveOperationBuilderImpl(installedFeature.getFeature()).remove();
 	}
