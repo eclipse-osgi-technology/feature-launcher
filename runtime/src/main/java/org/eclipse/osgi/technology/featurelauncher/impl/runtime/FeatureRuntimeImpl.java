@@ -287,6 +287,13 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 		Objects.requireNonNull(featureId, "Feature ID cannot be null!");
 		Objects.requireNonNull(feature, "Feature cannot be null!");
 
+		// Updating a feature that is not known to the Feature Runtime is an
+		// error (160.5).
+		if (getInstalledFeatureById(featureId) == null) {
+			throw new FeatureRuntimeException(
+					String.format("No feature matching %s ID could be found to update!", featureId));
+		}
+
 		return new UpdateOperationBuilderImpl(feature);
 	}
 
