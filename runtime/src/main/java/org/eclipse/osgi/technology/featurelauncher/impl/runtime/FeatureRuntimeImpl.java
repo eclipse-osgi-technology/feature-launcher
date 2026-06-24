@@ -342,11 +342,16 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 		@Override
 		public T addRepository(String name, ArtifactRepository repository) {
 			Objects.requireNonNull(name, "Artifact Repository name cannot be null!");
-			Objects.requireNonNull(repository, "Artifact Repository cannot be null!");
 
 			ensureNotCompletedYet();
 
-			this.artifactRepositories.put(name, repository);
+			// A null repository removes any repository previously registered
+			// under this name (160.5).
+			if (repository == null) {
+				this.artifactRepositories.remove(name);
+			} else {
+				this.artifactRepositories.put(name, repository);
+			}
 
 			return castThis();
 		}
