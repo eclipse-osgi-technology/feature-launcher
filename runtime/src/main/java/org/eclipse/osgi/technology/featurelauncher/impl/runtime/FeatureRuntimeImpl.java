@@ -296,7 +296,7 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 					String.format("No feature matching %s ID could be found to update!", featureId));
 		}
 
-		return new UpdateOperationBuilderImpl(feature);
+		return new UpdateOperationBuilderImpl(featureId, feature);
 	}
 
 	/* 
@@ -336,6 +336,10 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 		// operation fails part way through (160.5 rollback).
 		protected final List<ID> newlyInstalledBundleIds = new ArrayList<>();
 		protected final List<String> newlyCreatedConfigurationPids = new ArrayList<>();
+
+		// For an update operation, the id of the existing feature that is being
+		// replaced; null for an install.
+		protected ID featureIdToReplace;
 
 		public AbstractOperationBuilderImpl(Feature feature) {
 			Objects.requireNonNull(feature, "Feature cannot be null!");
@@ -538,6 +542,7 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 				feature = rebuildWithVariables(feature, mergedVariables);
 			}
 
+			InstalledFeature installedFeature;
 			try {
 				// Install bundles
 				List<InstalledBundle> installedBundles = installBundles(feature, featureBundlesIDs);
@@ -549,18 +554,18 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 				startBundles(featureId, installedBundles);
 
 				// construct installed feature
-				InstalledFeature installedFeature = constructInstalledFeature(feature, originalFeature,
+				installedFeature = constructInstalledFeature(feature, originalFeature,
 						decorated, false, installedBundles, installedConfigurations);
 
 				// update "owning features" in other 'installedFeatures'
 				updateInstalledFeaturesOnAddOrUpdate(installedFeature);
 
 				installedFeatures.add(installedFeature);
-
-				return installedFeature;
 			} catch (RuntimeException e) {
 				// On failure make every effort to return the system to its
-				// pre-operation state (160.5).
+				// pre-operation state (160.5). The feature being replaced (for an
+				// update) has not been touched yet, so the previous feature
+				// remains installed.
 				rollbackFailedOperation(featureId);
 
 				if (e instanceof FeatureRuntimeException) {
@@ -569,6 +574,18 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 				throw new FeatureRuntimeException(
 						String.format("Failed to install feature %s", featureId), e);
 			}
+
+			// For an update the new feature is now installed; remove the feature
+			// it replaces. Bundles and configurations shared with the new feature
+			// (or with other features) have had ownership transferred and are not
+			// removed. This happens after the new feature is committed, so a
+			// failure during the install phase rolls back to the pre-update state.
+			if (featureIdToReplace != null && !featureIdToReplace.equals(featureId)
+					&& getInstalledFeatureById(featureIdToReplace) != null) {
+				removeFeature(featureIdToReplace);
+			}
+
+			return installedFeature;
 		}
 
 		/**
@@ -889,8 +906,14 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 
 					if (configurationAlreadyInstalledByRuntime) {
 						LOG.info(String.format(
-								"Configuration %s duplicates configuration already installed by feature runtime!",
+								"Configuration %s is already installed by the feature runtime and will be updated",
 								configurationPid));
+
+						// A configuration owned by the runtime is updated with the
+						// new feature's values (160.5); createConfiguration applies
+						// updateIfDifferent.
+						featureRuntimeConfigurationManager.createConfiguration(featureConfiguration,
+								mergeVariables(feature));
 
 						installedConfigurations.add(constructAlreadyInstalledConfiguration(feature.getID(),
 								configurationPid, featureConfiguration));
@@ -1312,8 +1335,9 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 	public class UpdateOperationBuilderImpl extends AbstractOperationBuilderImpl<UpdateOperationBuilder>
 			implements UpdateOperationBuilder {
 
-		public UpdateOperationBuilderImpl(Feature feature) {
+		public UpdateOperationBuilderImpl(ID featureIdToReplace, Feature feature) {
 			super(feature);
+			this.featureIdToReplace = featureIdToReplace;
 		}
 
 		/* 
