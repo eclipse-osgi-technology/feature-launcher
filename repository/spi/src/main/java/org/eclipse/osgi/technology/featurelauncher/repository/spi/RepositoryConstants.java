@@ -33,7 +33,25 @@ public class RepositoryConstants {
 	 * Duplicates the name property from the real API
 	 */
 	public static final String ARTIFACT_REPOSITORY_NAME = "name";
-	
+
+	/**
+	 * Duplicates the user name property from the real API (used for Basic
+	 * authentication against a remote repository)
+	 */
+	public static final String ARTIFACT_REPOSITORY_USER = "user";
+
+	/**
+	 * Duplicates the password property from the real API (used for Basic
+	 * authentication against a remote repository)
+	 */
+	public static final String ARTIFACT_REPOSITORY_PASSWORD = "password";
+
+	/**
+	 * Duplicates the bearer token property from the real API (used for Bearer
+	 * authentication against a remote repository)
+	 */
+	public static final String ARTIFACT_REPOSITORY_BEARER_TOKEN = "token";
+
 	public static final String REMOTE_ARTIFACT_REPOSITORY_TYPE = "type";
 
 	public static final String DEFAULT_REMOTE_ARTIFACT_REPOSITORY_TYPE = "default";

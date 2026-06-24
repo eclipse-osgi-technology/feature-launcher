@@ -174,6 +174,19 @@ abstract class AbstractMavenRepositoryImpl implements FileSystemRepository {
 		RepositorySystemSession.SessionBuilder sessionBuilder = sessionBuilderSupplier.get();
 		sessionBuilder.setLocalRepositoryManager(localRepositoryManager);
 
+		configureSession(sessionBuilder);
+
 		return sessionBuilder.build();
+	}
+
+	/**
+	 * Hook for subclasses to contribute additional session configuration (for
+	 * example HTTP headers for authentication). The default implementation does
+	 * nothing.
+	 *
+	 * @param sessionBuilder the session builder to configure
+	 */
+	protected void configureSession(RepositorySystemSession.SessionBuilder sessionBuilder) {
+		// no-op by default
 	}
 }
