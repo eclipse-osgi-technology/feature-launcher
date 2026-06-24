@@ -14,6 +14,7 @@
 package org.eclipse.osgi.technology.featurelauncher.impl.runtime;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,7 +59,14 @@ class InstalledBundleImpl implements InstalledBundle {
 	 */
 	@Override
 	public Collection<ID> getAliases() {
-		return aliases;
+		// The returned collection must always contain the primary bundleId, and
+		// may contain additional IDs that collided with it on installation.
+		Collection<ID> allAliases = new LinkedHashSet<>();
+		allAliases.add(bundleId);
+		if (aliases != null) {
+			allAliases.addAll(aliases);
+		}
+		return allAliases;
 	}
 
 	/* 
