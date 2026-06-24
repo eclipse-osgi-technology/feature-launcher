@@ -631,66 +631,64 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 
 		// TODO: clarify with Tim understanding / how this is currently implemented and
 		// integrate this then
-		protected Stream<BundleMapping> maybeRunBundleMerge(MergeOperationType operation, Feature feature) {
-			if (runtimeBundleMerge != null) {
-
-				for (FeatureBundle featureBundle : feature.getBundles()) {
-					ID featureBundleId = featureBundle.getID();
-
-					List<InstalledBundle> conflictingInstalledBundles = new ArrayList<>();
-
-					List<FeatureBundleDefinition> conflictingFeatureBundles = new ArrayList<>();
-
-					for (InstalledFeature existingFeature : installedFeatures) {
-						for (InstalledBundle existingInstalledBundle : existingFeature.getInstalledBundles()) {
-
-							boolean isInConflict = ((featureBundleId.getGroupId())
-									.equals(existingInstalledBundle.getBundleId().getGroupId())
-									&& (featureBundleId.getArtifactId())
-											.equals(existingInstalledBundle.getBundleId().getArtifactId())
-									&& !featureBundleId.equals(existingInstalledBundle.getBundleId()));
-
-							if (isInConflict) {
-								conflictingInstalledBundles.add(existingInstalledBundle);
-
-								FeatureBundleDefinition conflictingFeatureBundle = new FeatureBundleDefinition() {
-
-									@Override
-									public FeatureBundle getFeatureBundle() {
-										// @formatter:off
-										return getFeature().getBundles().stream()
-												.filter(fb -> featureBundleId.equals(fb.getID()))
-												.findFirst()
-												.orElseThrow();
-										// @formatter:on
-									}
-
-									@Override
-									public Feature getFeature() {
-										return existingFeature.isDecorated() ? existingFeature.getOriginalFeature()
-												: existingFeature.getFeature();
-									}
-								};
-
-								conflictingFeatureBundles.add(conflictingFeatureBundle);
-							}
-						}
+		/**
+		 * Returns the installed bundles which overlap the supplied feature bundle,
+		 * i.e. have the same groupId and artifactId but a different id (160.5.6).
+		 */
+		protected List<InstalledBundle> findOverlappingInstalledBundles(ID featureBundleId) {
+			List<InstalledBundle> overlapping = new ArrayList<>();
+			for (InstalledFeature existingFeature : installedFeatures) {
+				for (InstalledBundle existingInstalledBundle : existingFeature.getInstalledBundles()) {
+					ID existingId = existingInstalledBundle.getBundleId();
+					boolean isInConflict = featureBundleId.getGroupId().equals(existingId.getGroupId())
+							&& featureBundleId.getArtifactId().equals(existingId.getArtifactId())
+							&& !featureBundleId.equals(existingId);
+					if (isInConflict && !overlapping.contains(existingInstalledBundle)) {
+						overlapping.add(existingInstalledBundle);
 					}
+				}
+			}
+			return overlapping;
+		}
 
-					if (!conflictingInstalledBundles.isEmpty()) {
-						// @formatter:off
-						return runtimeBundleMerge.mergeBundle(
-								operation, 
-								feature,
-								featureBundle,
-								conflictingInstalledBundles,
-								conflictingFeatureBundles);
-						// @formatter:on
+		/**
+		 * Runs the configured {@link RuntimeBundleMerge} for a single overlapping
+		 * feature bundle and returns the resulting bundle mappings. Returns an
+		 * empty list if no merge strategy is configured or there is no overlap.
+		 */
+		protected List<BundleMapping> runBundleMergeForBundle(MergeOperationType operation, Feature feature,
+				FeatureBundle featureBundle, List<InstalledBundle> overlapping) {
+			if (runtimeBundleMerge == null || overlapping.isEmpty()) {
+				return Collections.emptyList();
+			}
+
+			ID featureBundleId = featureBundle.getID();
+			List<FeatureBundleDefinition> conflictingFeatureBundles = new ArrayList<>();
+			for (InstalledFeature existingFeature : installedFeatures) {
+				for (InstalledBundle existingInstalledBundle : existingFeature.getInstalledBundles()) {
+					if (overlapping.contains(existingInstalledBundle)) {
+						conflictingFeatureBundles.add(new FeatureBundleDefinition() {
+							@Override
+							public FeatureBundle getFeatureBundle() {
+								return getFeature().getBundles().stream()
+										.filter(fb -> existingInstalledBundle.getBundleId().equals(fb.getID()))
+										.findFirst()
+										.orElse(featureBundle);
+							}
+
+							@Override
+							public Feature getFeature() {
+								return existingFeature.isDecorated() ? existingFeature.getOriginalFeature()
+										: existingFeature.getFeature();
+							}
+						});
 					}
 				}
 			}
 
-			return Stream.empty();
+			return runtimeBundleMerge
+					.mergeBundle(operation, feature, featureBundle, overlapping, conflictingFeatureBundles)
+					.collect(Collectors.toList());
 		}
 
 		// TODO: clarify with Tim understanding / how this is currently implemented and
@@ -784,6 +782,49 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 			List<InstalledBundle> installedBundles = new ArrayList<>();
 			for (FeatureBundle featureBundle : feature.getBundles()) {
 				ID bundleId = featureBundle.getID();
+
+				// Resolve overlaps (same groupId+artifactId, different version)
+				// using the configured bundle merge strategy (160.5.6).
+				if (runtimeBundleMerge != null) {
+					List<InstalledBundle> overlapping = findOverlappingInstalledBundles(bundleId);
+					if (!overlapping.isEmpty()) {
+						List<BundleMapping> mappings = runBundleMergeForBundle(MergeOperationType.INSTALL, feature,
+								featureBundle, overlapping);
+						Set<ID> keptIds = mappings.stream().map(m -> m.bundleId).collect(Collectors.toSet());
+
+						if (!keptIds.contains(bundleId)) {
+							// The merge keeps existing bundle(s) instead of
+							// installing this one: adopt each kept overlapping
+							// bundle for this feature, recording this bundle id as
+							// an alias.
+							for (InstalledBundle kept : overlapping) {
+								if (keptIds.contains(kept.getBundleId())) {
+									Bundle keptBundle = installedBundlesByIdentifier.get(kept.getBundleId());
+									installedBundles.add(constructInstalledBundle(kept.getBundleId(), List.of(bundleId),
+											keptBundle, constructBundleOwningFeatures(feature.getID(),
+													kept.getBundleId())));
+								}
+							}
+							continue;
+						}
+
+						// Otherwise install this bundle and uninstall any
+						// overlapping bundle the merge did not keep.
+						for (InstalledBundle kept : overlapping) {
+							if (!keptIds.contains(kept.getBundleId())) {
+								Bundle obsolete = installedBundlesByIdentifier.remove(kept.getBundleId());
+								if (obsolete != null) {
+									try {
+										obsolete.uninstall();
+									} catch (BundleException be) {
+										LOG.warn(String.format("Error uninstalling merged-out bundle %s",
+												kept.getBundleId()), be);
+									}
+								}
+							}
+						}
+					}
+				}
 
 				boolean bundleAlreadyInstalledByRuntime = installedBundlesByIdentifier.containsKey(bundleId);
 
