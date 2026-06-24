@@ -67,6 +67,13 @@ public class MavenRepositoryFactory implements RepositoryFactory {
 		Objects.requireNonNull(uri, "URI cannot be null!");
 		Objects.requireNonNull(configurationProperties, "Configuration properties cannot be null!");
 
+		// Only the file, http and https schemes are supported (160.2).
+		String scheme = uri.getScheme();
+		if (!"file".equals(scheme) && !"http".equals(scheme) && !"https".equals(scheme)) {
+			throw new IllegalArgumentException(
+					String.format("Unsupported repository URI scheme '%s'; expected file, http or https", scheme));
+		}
+
 		if(isLocalArtifactRepository(uri)) {
 			LOG.debug("Creating local repository for URI {}", uri);
 			return createLocalRepository(Paths.get(uri), configurationProperties);
