@@ -39,7 +39,6 @@ import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.DecorationContext;
 import org.eclipse.osgi.technology.featurelauncher.common.decorator.impl.LaunchFrameworkFeatureExtensionHandler;
@@ -662,7 +661,6 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 				return Collections.emptyList();
 			}
 
-			ID featureBundleId = featureBundle.getID();
 			List<FeatureBundleDefinition> conflictingFeatureBundles = new ArrayList<>();
 			for (InstalledFeature existingFeature : installedFeatures) {
 				for (InstalledBundle existingInstalledBundle : existingFeature.getInstalledBundles()) {
@@ -1092,7 +1090,11 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 		}
 
 		protected int getBundleStartLevel(Bundle bundle) {
-			return bundle.adapt(BundleStartLevel.class).getStartLevel();
+			if (bundle == null) {
+				return 1;
+			}
+			BundleStartLevel bundleStartLevel = bundle.adapt(BundleStartLevel.class);
+			return bundleStartLevel != null ? bundleStartLevel.getStartLevel() : 1;
 		}
 
 		protected void maybeSetBundleStartLevel(Bundle bundle, Map<String, Object> metadata) {
@@ -1142,12 +1144,30 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 			Bundle bundle = null;
 
 			Map.Entry<String, String> bundleSymbolicNameAndVersion = getBundleSymbolicNameAndVersion(bundleId);
-			if ((bundleSymbolicNameAndVersion != null) && (existingBundles.containsKey(bundleSymbolicNameAndVersion))) {
-				bundle = bundleContext.getBundle(existingBundles.get(bundleSymbolicNameAndVersion).longValue());
+			if (bundleSymbolicNameAndVersion != null) {
+				if (existingBundles.containsKey(bundleSymbolicNameAndVersion)) {
+					bundle = bundleContext.getBundle(existingBundles.get(bundleSymbolicNameAndVersion).longValue());
+				} else {
+					// The bundle may have been installed into the framework after
+					// this runtime started (so it is not in the initial snapshot);
+					// resolve it from the live framework by symbolic name/version.
+					bundle = findFrameworkBundle(bundleSymbolicNameAndVersion.getKey(),
+							bundleSymbolicNameAndVersion.getValue());
+				}
 			}
 
 			return constructInstalledBundle(bundleId, aliases, bundle,
 					constructOwningFeatures(featureId, externalFeatureId));
+		}
+
+		protected Bundle findFrameworkBundle(String symbolicName, String version) {
+			for (Bundle frameworkBundle : bundleContext.getBundles()) {
+				if (symbolicName.equals(frameworkBundle.getSymbolicName())
+						&& version.equals(frameworkBundle.getVersion().toString())) {
+					return frameworkBundle;
+				}
+			}
+			return null;
 		}
 
 		protected List<ID> constructOwningFeatures(ID... featureIds) {
