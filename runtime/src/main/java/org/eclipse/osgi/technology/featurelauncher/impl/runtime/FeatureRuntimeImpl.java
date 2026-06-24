@@ -330,6 +330,11 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 		
 		protected final MutableRepositoryList completedRepositories = new MutableRepositoryList();
 
+		// Tracks work done by this operation so it can be undone if the
+		// operation fails part way through (160.5 rollback).
+		protected final List<ID> newlyInstalledBundleIds = new ArrayList<>();
+		protected final List<String> newlyCreatedConfigurationPids = new ArrayList<>();
+
 		public AbstractOperationBuilderImpl(Feature feature) {
 			Objects.requireNonNull(feature, "Feature cannot be null!");
 
@@ -520,25 +525,78 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 				throw new FeatureRuntimeException("Feature decoration handling failed!", e);
 			}
 
-			// Install bundles
-			List<InstalledBundle> installedBundles = installBundles(feature, featureBundlesIDs);
+			try {
+				// Install bundles
+				List<InstalledBundle> installedBundles = installBundles(feature, featureBundlesIDs);
 
-			// Install configurations
-			List<InstalledConfiguration> installedConfigurations = installConfigurations(feature);
+				// Install configurations
+				List<InstalledConfiguration> installedConfigurations = installConfigurations(feature);
 
-			// Start bundles
-			startBundles(featureId, installedBundles);
+				// Start bundles
+				startBundles(featureId, installedBundles);
 
-			// construct installed feature
-			InstalledFeature installedFeature = constructInstalledFeature(feature, originalFeature,
-					feature != originalFeature, false, installedBundles, installedConfigurations);
+				// construct installed feature
+				InstalledFeature installedFeature = constructInstalledFeature(feature, originalFeature,
+						feature != originalFeature, false, installedBundles, installedConfigurations);
 
-			// update "owning features" in other 'installedFeatures'
-			updateInstalledFeaturesOnAddOrUpdate(installedFeature);
+				// update "owning features" in other 'installedFeatures'
+				updateInstalledFeaturesOnAddOrUpdate(installedFeature);
 
-			installedFeatures.add(installedFeature);
+				installedFeatures.add(installedFeature);
 
-			return installedFeature;
+				return installedFeature;
+			} catch (RuntimeException e) {
+				// On failure make every effort to return the system to its
+				// pre-operation state (160.5).
+				rollbackFailedOperation(featureId);
+
+				if (e instanceof FeatureRuntimeException) {
+					throw e;
+				}
+				throw new FeatureRuntimeException(
+						String.format("Failed to install feature %s", featureId), e);
+			}
+		}
+
+		/**
+		 * Undo the partial work performed by a failed install operation: stop and
+		 * uninstall the bundles installed by this operation, delete the
+		 * configurations it created (unless owned by another feature) and drop any
+		 * bookkeeping for the feature.
+		 */
+		protected void rollbackFailedOperation(ID featureId) {
+			// Uninstall bundles installed by this operation, in reverse order.
+			for (int i = newlyInstalledBundleIds.size() - 1; i >= 0; i--) {
+				ID bundleId = newlyInstalledBundleIds.get(i);
+				Bundle bundle = installedBundlesByIdentifier.remove(bundleId);
+				if (bundle != null) {
+					try {
+						bundle.uninstall();
+					} catch (BundleException be) {
+						LOG.warn(String.format("Error uninstalling bundle %s during rollback", bundleId), be);
+					}
+				}
+			}
+
+			// Delete configurations created by this operation that are not owned
+			// by any other feature.
+			Set<String> configurationPidsToRemove = new HashSet<>();
+			for (String pid : newlyCreatedConfigurationPids) {
+				boolean ownedByOther = installedFeaturesToConfigurations.entrySet().stream()
+						.anyMatch(en -> !featureId.equals(en.getKey()) && en.getValue().contains(pid));
+				if (!ownedByOther) {
+					configurationPidsToRemove.add(pid);
+				}
+			}
+			if (!configurationPidsToRemove.isEmpty()) {
+				removeFeatureConfigurations(configurationPidsToRemove);
+			}
+
+			// Drop bookkeeping for the failed feature.
+			installedFeaturesToBundles.remove(featureId);
+			installedFeaturesToConfigurations.remove(featureId);
+			installedFeatures.removeIf(f -> featureId.equals(f.getFeature().getID()));
+			updateInstalledFeaturesOnRemove(featureId);
 		}
 
 		// TODO: clarify with Tim understanding / how this is currently implemented and
@@ -708,11 +766,17 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 
 						if (bundle != null) {
 							installedBundlesByIdentifier.put(bundleId, bundle);
+							newlyInstalledBundleIds.add(bundleId);
 
 							maybeSetBundleStartLevel(bundle, featureBundle.getMetadata());
 
 							installedBundles.add(constructInstalledBundle(bundleId, bundle,
 									constructOwningFeatures(feature.getID())));
+						} else {
+							// No artifact could be located in any configured
+							// repository: this is a failure (160.5).
+							throw new FeatureRuntimeException(String.format(
+									"Could not find bundle '%s' in any configured artifact repository!", bundleId));
 						}
 
 					} catch (BundleException e) {
@@ -801,6 +865,7 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 
 					featureRuntimeConfigurationManager.createConfiguration(featureConfiguration,
 							mergeVariables(feature));
+					newlyCreatedConfigurationPids.add(configurationPid);
 
 					installedConfigurations.add(constructInstalledConfiguration(featureConfiguration,
 							constructOwningFeatures(feature.getID())));
@@ -837,19 +902,27 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 
 		protected void startBundles(ID featureId, List<InstalledBundle> installedBundles) {
 			for (InstalledBundle installedBundle : installedBundles) {
-				try {
-					if (installedBundle.getBundle().getState() == Bundle.INSTALLED) {
-						BundleRevision rev = installedBundle.getBundle().adapt(BundleRevision.class);
-						if (rev != null && (rev.getTypes() & BundleRevision.TYPE_FRAGMENT) == 0) {
-							// Start all but fragment bundles
-							installedBundle.getBundle().start();
-						} else {
-							LOG.info(String.format("Not starting bundle %s as it is a fragment",
-									installedBundle.getBundle().getSymbolicName()));
-						}
+				Bundle bundle = installedBundle.getBundle();
+				if (bundle == null) {
+					continue;
+				}
+				BundleRevision rev = bundle.adapt(BundleRevision.class);
+				boolean isFragment = rev != null && (rev.getTypes() & BundleRevision.TYPE_FRAGMENT) != 0;
+				if (isFragment) {
+					LOG.info(String.format("Not starting bundle %s as it is a fragment", bundle.getSymbolicName()));
+					continue;
+				}
+				if (bundle.getState() == Bundle.INSTALLED || bundle.getState() == Bundle.RESOLVED) {
+					try {
+						bundle.start();
+					} catch (BundleException e) {
+						// A resolved, non-fragment bundle that fails to start is an
+						// error (160.5) and must fail the operation.
+						throw new FeatureRuntimeException(
+								String.format("Bundle %s in feature %s failed to start", bundle.getSymbolicName(),
+										featureId),
+								e);
 					}
-				} catch (Exception e) {
-					LOG.warn(String.format("An error occurred starting a bundle in feature %s", featureId));
 				}
 			}
 		}
