@@ -257,7 +257,9 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 	 */
 	@Override
 	public List<InstalledFeature> getInstalledFeatures() {
-		return installedFeatures;
+		// Return a snapshot of the current state rather than the live internal
+		// list (160.5).
+		return new ArrayList<>(installedFeatures);
 	}
 
 	/* 
