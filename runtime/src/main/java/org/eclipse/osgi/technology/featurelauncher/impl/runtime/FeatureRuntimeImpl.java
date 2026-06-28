@@ -502,6 +502,16 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 	        		.collect(Collectors.toList());
 	        // @formatter:on
 
+			// Installing a feature that is already known to the Feature Runtime
+			// is an error; callers must use update() to change it (160.5.2.1.5).
+			// Update operations set featureIdToReplace and are permitted to
+			// re-install a feature with the same id.
+			if (featureIdToReplace == null
+					&& installedFeaturesToBundles.containsKey(featureId)) {
+				throw new FeatureRuntimeException(
+						String.format("The feature %s is already installed", featureId));
+			}
+
 			// Check if feature is already installed or out of date
 			if (installedFeaturesToBundles.containsKey(featureId)) {
 				LOG.info(String.format("Updating feature %s", featureId));
