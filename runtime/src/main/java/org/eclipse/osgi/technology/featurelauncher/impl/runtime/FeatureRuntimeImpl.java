@@ -259,7 +259,7 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 	public List<InstalledFeature> getInstalledFeatures() {
 		// Return a snapshot of the current state rather than the live internal
 		// list (160.5).
-		return new ArrayList<>(installedFeatures);
+		return List.copyOf(installedFeatures);
 	}
 
 	/* 
