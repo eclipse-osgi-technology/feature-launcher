@@ -275,6 +275,7 @@ public class FeatureRuntimeImpl implements FeatureRuntime {
 		// It is not an error to remove a feature which is not known to the
 		// Feature Runtime; this must return without altering the system.
 		if (installedFeature == null) {
+			LOG.warn(String.format("No feature matching %s ID could be found!", featureId.toString()));
 			return;
 		}
 
