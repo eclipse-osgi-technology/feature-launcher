@@ -10,9 +10,13 @@
 -runee: JavaSE-17
 -runfw: org.apache.felix.framework
 
+# gosh.args=--nointeractive keeps the Gogo shell (installed by the test features) from
+# starting an interactive console on System.in; on headless environments (e.g. CI) that
+# console reads EOF and shuts down the framework, breaking subsequent tests.
 -runproperties: \
  localRepositoryPath=${.}/target/m2Repo,\
- remoteRepositoryPath=${.}/target/remoteRepo
+ remoteRepositoryPath=${.}/target/remoteRepo,\
+ gosh.args=--nointeractive
 
 # This will help us keep -runbundles sorted
 -runstartlevel: \
