@@ -384,7 +384,7 @@ public class FeatureRuntimeIntegrationTest {
 
 			assertNotNull(installedFeature.getInstalledBundles());
 			List<InstalledBundle> installedBundles = installedFeature.getInstalledBundles();
-			assertEquals(14, installedBundles.size());
+			assertEquals(17, installedBundles.size());
 
 			assertEquals("org.apache.felix.configadmin", installedBundles.get(0).getBundle().getSymbolicName());
 			assertTrue(installedBundles.get(0).getOwningFeatures().contains(installedFeature.getFeature().getID()));
@@ -404,6 +404,15 @@ public class FeatureRuntimeIntegrationTest {
 
 			assertEquals("org.apache.felix.webconsole", installedBundles.get(13).getBundle().getSymbolicName());
 			assertTrue(installedBundles.get(13).getOwningFeatures().contains(installedFeature.getFeature().getID()));
+
+			assertEquals("org.apache.felix.inventory", installedBundles.get(14).getBundle().getSymbolicName());
+			assertTrue(installedBundles.get(14).getOwningFeatures().contains(installedFeature.getFeature().getID()));
+
+			assertEquals("org.owasp.encoder", installedBundles.get(15).getBundle().getSymbolicName());
+			assertTrue(installedBundles.get(15).getOwningFeatures().contains(installedFeature.getFeature().getID()));
+
+			assertEquals("org.osgi.service.log", installedBundles.get(16).getBundle().getSymbolicName());
+			assertTrue(installedBundles.get(16).getOwningFeatures().contains(installedFeature.getFeature().getID()));
 
 			List<InstalledConfiguration> installedConfigurations = installedFeature.getInstalledConfigurations();
 			assertFalse(installedConfigurations.isEmpty());
@@ -516,7 +525,7 @@ public class FeatureRuntimeIntegrationTest {
 
 			assertNotNull(updatedFeature.getInstalledBundles());
 			List<InstalledBundle> installedBundles = updatedFeature.getInstalledBundles();
-			assertEquals(14, installedBundles.size());
+			assertEquals(17, installedBundles.size());
 
 			assertEquals("org.apache.felix.configadmin", installedBundles.get(0).getBundle().getSymbolicName());
 			assertTrue(installedBundles.get(0).getOwningFeatures().contains(updatedFeature.getFeature().getID()));
@@ -536,6 +545,15 @@ public class FeatureRuntimeIntegrationTest {
 
 			assertEquals("org.apache.felix.webconsole", installedBundles.get(13).getBundle().getSymbolicName());
 			assertTrue(installedBundles.get(13).getOwningFeatures().contains(updatedFeature.getFeature().getID()));
+
+			assertEquals("org.apache.felix.inventory", installedBundles.get(14).getBundle().getSymbolicName());
+			assertTrue(installedBundles.get(14).getOwningFeatures().contains(updatedFeature.getFeature().getID()));
+
+			assertEquals("org.owasp.encoder", installedBundles.get(15).getBundle().getSymbolicName());
+			assertTrue(installedBundles.get(15).getOwningFeatures().contains(updatedFeature.getFeature().getID()));
+
+			assertEquals("org.osgi.service.log", installedBundles.get(16).getBundle().getSymbolicName());
+			assertTrue(installedBundles.get(16).getOwningFeatures().contains(updatedFeature.getFeature().getID()));
 
 			List<InstalledConfiguration> installedConfigurations = updatedFeature.getInstalledConfigurations();
 			assertFalse(installedConfigurations.isEmpty());

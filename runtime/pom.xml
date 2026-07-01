@@ -178,6 +178,27 @@
 			<version>5.0.10</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<!-- Packages required by org.apache.felix.webconsole are provided-scoped in its
+			     POM, so they must be declared explicitly to be copied into the test repository. -->
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.inventory</artifactId>
+			<version>2.0.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.owasp.encoder</groupId>
+			<artifactId>encoder</artifactId>
+			<version>1.2.3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<!-- org.osgi.service.log package required (mandatorily) by org.apache.felix.inventory. -->
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.service.log</artifactId>
+			<version>1.5.0</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	
 	<build>
