@@ -116,19 +116,22 @@ class FeatureHttpWatcher {
 		scan();
 
 		if (ScanMode.WATCH == scanMode) {
-			watchThread = Thread.ofVirtual().name("FeatureHttpWatcher").start(() -> {
+			Thread thread = new Thread(() -> {
 				LOG.info("WATCH mode active - polling every {} seconds", intervalSeconds);
 				Duration interval = Duration.ofSeconds(intervalSeconds);
 				while (!Thread.currentThread().isInterrupted()) {
 					try {
-						Thread.sleep(interval);
+						Thread.sleep(interval.toMillis());
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt();
 						break;
 					}
 					scan();
 				}
-			});
+			}, "FeatureHttpWatcher");
+			thread.setDaemon(true);
+			thread.start();
+			watchThread = thread;
 		}
 	}
 
