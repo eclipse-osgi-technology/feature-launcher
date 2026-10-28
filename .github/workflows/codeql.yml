@@ -1,0 +1,19 @@
+# Managed by the otterdog blueprint
+# https://github.com/eclipse-osgi-technology/.eclipsefdn/blob/main/otterdog/blueprints/codeql.yml
+# change it there; the logic lives in eclipse-osgi-technology/.github.
+name: CodeQL
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '17 4 * * 3'
+permissions:
+  contents: read
+jobs:
+  analyze:
+    permissions:
+      contents: read
+      security-events: write
+    uses: eclipse-osgi-technology/.github/.github/workflows/codeql.yml@main
