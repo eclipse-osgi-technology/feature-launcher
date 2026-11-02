@@ -551,6 +551,8 @@
 										<includes>
 											<include>org.osgi:org.osgi.service.feature</include>
 											<include>org.osgi:osgi.annotation</include>
+											<include>org.osgi:org.osgi.annotation.versioning</include>
+											<include>org.osgi:org.osgi.annotation.bundle</include>
 											<include>org.osgi:org.osgi.namespace.*</include>
 											<include>org.osgi:org.osgi.service.featurelauncher</include>
 											<include>org.osgi:org.osgi.service.component.annotations</include>
