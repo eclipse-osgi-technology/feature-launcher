@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.osgi.technology.featurelauncher.common.util.impl.VariablesUtil;
 import org.osgi.service.feature.Feature;
 import org.osgi.service.feature.FeatureExtension;
 import org.osgi.service.featurelauncher.decorator.AbandonOperationException;
@@ -35,9 +34,9 @@ import org.osgi.service.featurelauncher.repository.ArtifactRepository;
  */
 public class FrameworkLaunchingPropertiesFeatureExtensionHandlerImpl
 		implements FeatureExtensionHandler {
-	private final Map<String, String> frameworkProperties;
+	private final Map<String, Object> frameworkProperties;
 
-	private final Map<String, String> customProperties; // properties starting with a single underscore
+	private final Map<String, Object> customProperties; // properties starting with a single underscore
 
 	public FrameworkLaunchingPropertiesFeatureExtensionHandlerImpl() {
 		this.frameworkProperties = new HashMap<>();
@@ -54,14 +53,13 @@ public class FrameworkLaunchingPropertiesFeatureExtensionHandlerImpl
 			FeatureExtensionHandlerBuilder decoratedFeatureBuilder, DecoratorBuilderFactory factory)
 			throws AbandonOperationException {
 
-		Map<String, Object> rawProperties = DecorationContext.readFeatureExtensionJSON(extension.getJSON());
-
-		Map<String, Object> properties = VariablesUtil.maybeSubstituteVariables(rawProperties,
-				feature.getVariables());
+		// Variables are not substituted here: overrides are only known when the
+		// framework is launched, where the merged variables are applied (160.3.2)
+		Map<String, Object> properties = DecorationContext.readFeatureExtensionJSON(extension.getJSON());
 
 		for (Map.Entry<String, Object> propertyEntry : properties.entrySet()) {
 			String propertyName = propertyEntry.getKey();
-			String propertyValue = propertyEntry.getValue().toString();
+			Object propertyValue = propertyEntry.getValue();
 
 			if (propertyName.startsWith("__")) {
 				frameworkProperties.put(propertyName.replaceFirst("_", ""), propertyValue);
@@ -75,11 +73,11 @@ public class FrameworkLaunchingPropertiesFeatureExtensionHandlerImpl
 		return feature;
 	}
 
-	public Map<String, String> getFrameworkProperties() {
+	public Map<String, Object> getFrameworkProperties() {
 		return frameworkProperties;
 	}
 
-	public Map<String, String> getCustomProperties() {
+	public Map<String, Object> getCustomProperties() {
 		return customProperties;
 	}
 	
