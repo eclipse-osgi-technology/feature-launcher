@@ -105,6 +105,9 @@ public class FeatureLauncherCli implements Runnable {
 			+ "to be launched from the command line.";
 	static final String VERSION = HEADING + " 1.0";
 	static final int EXITCODE_SUCCESS = 0;
+	// Splits on commas that are not escaped with a backslash (160.4.2.4)
+	static final String COMMA_SPLIT = "(?<!\\\\),";
+
 	static final String REMOTE_ARTIFACT_REPOSITORY_URI_VALUE = "REMOTE_ARTIFACT_REPOSITORY_URI";
 
 	@ArgGroup(exclusive = true, multiplicity = "1", order = -10)
@@ -139,17 +142,17 @@ public class FeatureLauncherCli implements Runnable {
 
 	@Option(names = { "-l",
 			"--launch-property" }, paramLabel = "key=value", description = "Provides one or more launch properties that should be passed "
-					+ "to the framework when it is launched.", order = -6)
+					+ "to the framework when it is launched.", split = COMMA_SPLIT, converter = { UnescapeConverter.class, UnescapeConverter.class }, order = -6)
 	private Map<String, String> frameworkProperties;
 
 	@Option(names = { "-v",
 			"--variable-override" }, paramLabel = "key=value", description = "Provides one or more variables that should be used to set or "
-					+ "override variables defined in the feature.", order = -5)
+					+ "override variables defined in the feature.", split = COMMA_SPLIT, converter = { UnescapeConverter.class, UnescapeConverter.class }, order = -5)
 	private Map<String, Object> variables;
 
 	@Option(names = { "-c",
 			"--configuration" }, paramLabel = "key=value", description = "Provides one or more configuration properties that should "
-					+ "be used to control implementation specific behaviour.", order = -4)
+					+ "be used to control implementation specific behaviour.", split = COMMA_SPLIT, converter = { UnescapeConverter.class, UnescapeConverter.class }, order = -4)
 	private Map<String, Object> configuration;
 
 	@Option(names = {
@@ -538,6 +541,13 @@ public class FeatureLauncherCli implements Runnable {
 						+ "feature that must be launched. Feature files in this "
 						+ "directory: ${COMPLETION-CANDIDATES}", order = -10, converter = FeatureFromFilePathConverter.class, completionCandidates = FeatureFilePathCompleter.class)
 		Feature featureFromFilePath;
+	}
+
+	static class UnescapeConverter implements ITypeConverter<String> {
+		@Override
+		public String convert(String value) {
+			return value.replace("\\,", ",");
+		}
 	}
 
 	static class UserSpecifiedArtifactRepositoryParameterConsumer implements IParameterConsumer {
