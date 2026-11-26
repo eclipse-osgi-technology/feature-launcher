@@ -154,6 +154,9 @@ public class DecorationContext<T extends FeatureExtensionHandler> {
 					properties.put(propertyName, Boolean.FALSE);
 				} else if (propertyValue.equals(JsonValue.NULL)) {
 					properties.put(propertyName, null);
+				} else {
+					// Arrays and objects are kept so that callers can reject them
+					properties.put(propertyName, propertyValue);
 				}
 			}
 

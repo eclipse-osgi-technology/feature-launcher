@@ -135,6 +135,14 @@ public class SecondStageLauncherImpl implements SecondStageLauncher {
 		Map<String, Object> properties = VariablesUtil.maybeSubstituteVariables(rawProperties,
 				variables);
 
+		// 160.4.2.1: only scalar values can be framework launch properties
+		properties.forEach((k, v) -> {
+			if (!(v instanceof String || v instanceof Number || v instanceof Boolean)) {
+				throw new LaunchException(
+						String.format("The framework launch property %s must have a scalar value", k));
+			}
+		});
+
 		return properties.entrySet().stream()
 				.collect(Collectors.toMap(e -> String.valueOf(e.getKey()), e -> String.valueOf(e.getValue())));
 	}
